@@ -23,6 +23,8 @@ public class DataTable extends AbstractTableModel {
     private Object[][] data;
     private int currentIndex = -1;
     
+    private String[] tableNames;
+    
     /**
      * Crea un nuevo DataTable vacío
      */
@@ -50,6 +52,19 @@ public class DataTable extends AbstractTableModel {
      */
     public String[] getColumns() {
         return columns;
+    }
+    
+    /**
+     * Obtiene los nombres de las tablas de las que se extrajeron las columnas
+     * de este DataTable
+     * 
+     * @return un arreglo de nombres únicos de tablas de las que se extrajo la
+     * información del DataTable. Puede ser que se regrese un elemento vacío en
+     * caso de que los nombres de las tablas no sean aplicables en el DBMS. En
+     * caso de que no existan datos en el DataTable se devolverá null.
+     */
+    public String[] getTableNames() {
+        return tableNames;
     }
     
     /**
@@ -172,10 +187,16 @@ public class DataTable extends AbstractTableModel {
             int columnCount = metaData.getColumnCount();
             columns = new String[columnCount];
             List<Object[]> tempData = new ArrayList<>();
+            List<String> tempTableNames = new ArrayList<>();
 
 
             for (int i = 0; i < columnCount; i++) {
                 columns[i] = metaData.getColumnLabel(i + 1);
+                String tableName = metaData.getTableName(i + 1);
+                
+                if (!tempTableNames.contains(tableName)) {
+                    tempTableNames.add(tableName);
+                }
             }
 
             //rs.beforeFirst();         //No se puede en todos los DBMS
@@ -190,7 +211,14 @@ public class DataTable extends AbstractTableModel {
 
             data = new Object[tempData.size()][];
             tempData.toArray(data);
+            
+            tableNames = new String[tempTableNames.size()];
+            tempTableNames.toArray(tableNames);
+            
             currentIndex = -1;
+        }
+        else {
+            throw new IllegalArgumentException("ResultSet can't be null");
         }
     }
     

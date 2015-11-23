@@ -9,12 +9,11 @@ import java.rmi.RemoteException;
 import modelo.dto.DataTable;
 
 
-
 /**
  *
  * @author jdosornio
  */
-public interface Sitio3Int extends Sitio {
+public interface Sitio5Int extends Sitio {
         /**
      * Obtiene los id's de las implementaciones de evento en las que participen
      * los empleados que pertenezcan a un plantel determinado.

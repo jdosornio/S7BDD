@@ -16,26 +16,6 @@ import java.util.logging.Logger;
  * @version 1 18 Mayo 2015
  */
 public class InicioServidor {
-
-    //Crea el servidor sin alguna interfaz gráfica.
-//    /**
-//     * Método principal de la aplicación, crea el registro, agrega el objeto que
-//     * implementará la interface remota y proveerá los servicios
-//     *
-//     * @param args arreglo de String para enviarse desde la línea de comandos
-//     */
-//    public static void main(String[] args) {
-//
-//        try {
-//            //Crea el nuevo registro en el puerto 9000
-//            Registry registro = LocateRegistry.createRegistry(9000);
-//            //Agrega la etiqueta para identificar el servicio y crea un nuevo
-//            //Objeto para proveer los métodos remotos
-//            registro.rebind("MatExPersist", new AccesoDatos());
-//        } catch (RemoteException ex) {
-//            System.out.println(ex);
-//        }
-//    }
     /**
      * Crea el registro, agrega el objeto que implementará la interface remota y
      * proveerá los servicios

@@ -12,10 +12,10 @@ import modelo.dto.DataTable;
  *
  * @author jdosornio
  */
-public interface Sitio1Int extends Sitio {
+public interface Sitio7Int extends Sitio {
     
     /**
-     * Obtiene el primer_nombre, segundo_nombre, apellido_paterno y
+     * Obtiene el primer_nombre, segundo_nombre, apellido_paterno,
      * apellido_materno y id_puesto de un empleado dado un número de empleado.
      * 
      * @param numeroEmp el número del empleado que se desea obtener
@@ -27,24 +27,6 @@ public interface Sitio1Int extends Sitio {
      * invocar este método
      */
     public DataTable getEmpleado(String numeroEmp) throws RemoteException;
-    
-    /**
-     * Obtiene los id's de las implementaciones de evento en las que participen
-     * los empleados que pertenezcan a un departamento determinado.
-     * 
-     * @param idDepartamento el id del departamento del que se desea obtener las
-     * implementaciones de evento
-     * 
-     * @return un objeto DataTable con todos los id's de las implementaciones de
-     * evento en las que participen empleados del departamento con el id
-     * suministrado o un DataTable vacío en caso de que no exista el departamento
-     * en este nodo o que no existan implementaciones de evento para ese
-     * departamento.
-     * 
-     * @throws RemoteException en caso de que ocurra un error de tipo remoto al
-     * invocar este método
-     */
-    public DataTable getImplementacionesByDepartamento(int idDepartamento) throws RemoteException;
     
     /**
      * Obtiene el primer_nombre, segundo_nombre, apellido_paterno,
