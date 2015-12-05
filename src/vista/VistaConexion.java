@@ -581,7 +581,7 @@ public class VistaConexion extends javax.swing.JFrame {
         //Sitio
         String serverIp = s7IP.getText();
         int serverPuerto = Integer.parseInt(s7Puerto.getText());
-        String serverInt = s7IP.getText();
+        String serverInt = s7Int.getText();
         
         //Persistencia
         int puerto = Integer.parseInt(persistPuerto.getText());
@@ -606,6 +606,8 @@ public class VistaConexion extends javax.swing.JFrame {
             if (!ip.isEmpty() && !puerto.isEmpty() && !intf.isEmpty()) {
                 try {
                     InterfaceManager.addInterface(ip, Integer.parseInt(puerto), intf);
+                    System.out.println("Inteface added: " + intf + " ip: " + ip +
+                            " en puerto: " + puerto);
                     
                 } catch (RemoteException | NotBoundException ex) {
                     Logger.getLogger(VistaConexion.class.getName()).log(Level.SEVERE, null, ex);

@@ -8,6 +8,7 @@ package local;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
+import modelo.dao.BaseDAO;
 import modelo.dao.ConnectionManager;
 import modelo.dao.EmpleadoDAO;
 import modelo.dto.DataTable;
@@ -36,7 +37,22 @@ public class AccesoLocal extends UnicastRemoteObject implements Sitio7Int {
 
     @Override
     public short insert(String[] tablas, DataTable... datos) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        short ok = 1;
+        BaseDAO dao = new BaseDAO();
+        //Insertar todas las tablas....
+        for (int i = 0; i < tablas.length; i++) {
+            boolean noError = dao.add(tablas[i], datos[i]);
+            
+            if (!noError) {
+                ok = 0;
+                break;
+            }
+        }
+        
+        System.out.println("Inserción de " + tablas.length + " tablas, resultado: " +
+                ok);
+        
+        return ok;
     }
 
     @Override
@@ -51,12 +67,20 @@ public class AccesoLocal extends UnicastRemoteObject implements Sitio7Int {
 
     @Override
     public boolean commit() throws RemoteException {
-        return ConnectionManager.commit();
+        System.out.println("Commit!");
+        boolean ok = ConnectionManager.commit();
+        ConnectionManager.cerrar();
+        
+        return ok;
     }
 
     @Override
     public boolean rollback() throws RemoteException {
-        return ConnectionManager.rollback();
+        System.out.println("Rollback!");
+        boolean ok = ConnectionManager.rollback();
+        ConnectionManager.cerrar();
+        
+        return ok;
     }
 
     @Override

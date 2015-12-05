@@ -73,31 +73,31 @@ public class BaseDAO {
         return ok;
     }
 
-    public static void main(String[] args) throws SQLException, InterruptedException {
-        String[] columns = {"numero", "primer_nombre", "segundo_nombre",
-            "apellido_paterno", "apellido_materno", "puesto_id"};
-
-        Object[][] data = new Object[3][];
-
-        data[0] = new Object[]{"277", "JESUS", "DONALDO", "OSORNIO", "HERNANDEZ", 6};
-        data[1] = new Object[]{"278", "ALFREDO", "", "ROUSE", "MADRIGAL", 3};
-        data[2] = new Object[]{"279", "EFRAIN", "IVAN", "MARISCAL", "MARTINEZ", 89};
-
-        DataTable dt = new DataTable(columns, data);
-
-        new BaseDAO().add("empleado", dt);
-
-//        Runnable r = () -> {
-//            ConnectionManager.commit();
-//        };
+//    public static void main(String[] args) throws SQLException, InterruptedException {
+//        String[] columns = {"numero", "primer_nombre", "segundo_nombre",
+//            "apellido_paterno", "apellido_materno", "puesto_id"};
+//
+//        Object[][] data = new Object[3][];
+//
+//        data[0] = new Object[]{"277", "JESUS", "DONALDO", "OSORNIO", "HERNANDEZ", 6};
+//        data[1] = new Object[]{"278", "ALFREDO", "", "ROUSE", "MADRIGAL", 3};
+//        data[2] = new Object[]{"279", "EFRAIN", "IVAN", "MARISCAL", "MARTINEZ", 89};
+//
+//        DataTable dt = new DataTable(columns, data);
+//
+//        new BaseDAO().add("empleado", dt);
+//
+////        Runnable r = () -> {
+////            ConnectionManager.commit();
+////        };
+////        
+////        Thread t = new Thread(r);
+////        t.start();
+////        
+////        t.join();
+////        
+////        new Scanner(System.in).next();
 //        
-//        Thread t = new Thread(r);
-//        t.start();
-//        
-//        t.join();
-//        
-//        new Scanner(System.in).next();
-        
-        ConnectionManager.commit();
-    }
+//        ConnectionManager.commit();
+//    }
 }
