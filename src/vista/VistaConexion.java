@@ -5,7 +5,6 @@
  */
 package vista;
 
-import java.awt.Component;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.logging.Level;

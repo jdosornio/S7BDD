@@ -56,13 +56,31 @@ public class AccesoLocal extends UnicastRemoteObject implements Sitio7Int {
     }
 
     @Override
-    public short update(String tabla, DataTable datos, Map attrWhere) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public short update(String tabla, DataTable datos, Map<String, ?> attrWhere) throws RemoteException {
+        short ok = 1;
+        BaseDAO dao = new BaseDAO();
+        
+        if (!dao.update(tabla, datos, attrWhere)) {
+            ok = 0;
+        }
+        
+        System.out.println("Actualizada la tabla: " + tabla + " resultado: " + ok);
+        
+        return ok;
     }
 
     @Override
-    public short delete(String tabla, Map attrWhere) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public short delete(String tabla, Map<String, ?> attrWhere) throws RemoteException {
+        short ok = 1;
+        BaseDAO dao = new BaseDAO();
+        
+        if (!dao.delete(tabla, attrWhere)) {
+            ok = 0;
+        }
+        
+        System.out.println("Se eliminó de la tabla: " + tabla + " resultado: " + ok);
+        
+        return ok;
     }
 
     @Override

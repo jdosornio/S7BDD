@@ -19,22 +19,56 @@ import javax.swing.table.AbstractTableModel;
  */
 public class DataTable extends AbstractTableModel {
 
+    /**
+     * Nombres de las columnas de la tabla
+     */
     private String[] columns;
+    /**
+     * Matriz con los datos de la tabla
+     */
     private Object[][] data;
+    /**
+     * Cursor que apunta a la posición actual en la que se lee-escribe
+     */
     private int currentIndex = -1;
+    /**
+     * bandera para indicar si se puede escribir o no
+     */
+    private boolean readOnly = false;
     
+    /**
+     * Nombres de las tablas de las que se extrajo la información, puede ser null
+     * si no se obtuvieron los datos de un resultset.
+     */
     private String[] tableNames;
     
     /**
-     * Crea un nuevo DataTable vacío
+     * Crea un nuevo DataTable vacío en modo escritura.
      */
     public DataTable() {
         
     }
     
     /**
-     * Crea un nuevo DataTable con las columnas y la matrix proporcionada,
-     * también posiciona el cursor una posición antes del primer registro
+     * Crea un nuevo DataTable con los nombres de las columnas especificadas,
+     * además también crea una matriz de datos vacía con el número de filas y
+     * columnas especificado. También posiciona el cursor una posición antes del
+     * primer registro.
+     * El DataTable se crea en modo escritura.
+     * 
+     * @param columns un arreglo con los nombres de las columnas de la tabla
+     * @param noRows el número de filas que tendrá el DataTable (mayor a 0)
+     * @param noCols el número de columnas que tendrá el DataTable (mayor a 0)
+     */
+    public DataTable(String[] columns, int noRows, int noCols) {
+        this.columns = columns;
+        this.data = new Object[noRows][noCols];
+    }
+    
+    /**
+     * Crea un nuevo DataTable con las columnas y la matriz proporcionada,
+     * también posiciona el cursor una posición antes del primer registro.
+     * El DataTable se crea en modo de sólo lectura.
      * 
      * @param columns el arreglo de nombres de columnas
      * @param data la matriz de datos
@@ -43,6 +77,8 @@ public class DataTable extends AbstractTableModel {
 
         this.columns = columns;
         this.data = data;
+        
+        readOnly = true;
     }
     
     /**
@@ -104,6 +140,20 @@ public class DataTable extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         return data[rowIndex][columnIndex];
+    }
+    
+    /**
+     * Almacena el objeto especificado en la fila y columna especificada.
+     * Este método no altera la posición del cursor
+     * 
+     * @param rowIndex el índice de la fila (base 0)
+     * @param columnIndex el índice de la columna (base 0)
+     * @param value el objeto que se desea almacenar en el DataTable
+     * @throws ArrayIndexOutOfBoundsException en caso de que no existan las
+     * posiciones en la matriz del DataTable
+     */
+    private void setValueAt(int rowIndex, int columnIndex, Object value) {
+        data[rowIndex][columnIndex] = value;
     }
     
     /**
@@ -172,7 +222,9 @@ public class DataTable extends AbstractTableModel {
     
     /**
      * Llena el DataTable con el resultset completo y reinicia el cursor para
-     * posicionarlo una posición antes del primer registro
+     * posicionarlo una posición antes del primer registro. Cambia el estado del
+     * DataTable a sólo lectura.
+     * 
      * @see next()
      * @param rs el resultset de la base de datos que contiene la información
      * (no debe ser leído antes para que se puedan cargar todos los registros)
@@ -216,6 +268,8 @@ public class DataTable extends AbstractTableModel {
             tempTableNames.toArray(tableNames);
             
             currentIndex = -1;
+            
+            readOnly = true;
         }
         else {
             throw new IllegalArgumentException("ResultSet can't be null");
@@ -340,5 +394,35 @@ public class DataTable extends AbstractTableModel {
      */
     public Date getDate(String columnName) {
         return (Date) getObject(columnName);
+    }
+    
+    /**
+     * Almacena el valor especificado en el DataTable en la columna con el nombre
+     * especificado y la fila en la que el cursor está posicionado actualmente
+     * 
+     * @param columnName el nombre de la columna
+     * @param value el valor a almacenar
+     * @return true en caso de que la operación se realice con éxito, false en
+     * caso de que el DataTable esté en modo sólo lectura
+     * @throws ArrayIndexOutOfBoundsException en caso de que el cursor no se
+     * encuentre en una posición válida o no exista el nombre de la columna
+     * especificado
+     */
+    public boolean setObject(String columnName, Object value) {
+        boolean ok = false;
+        
+        if(!readOnly) {
+            setValueAt(currentIndex, getColumnIndex(columnName), value);
+            ok = true;
+        }
+        
+        return ok;
+    }
+    
+    /**
+     * Reinicia el cursor una posición antes de la primera fila
+     */
+    public void rewind() {
+        currentIndex = -1;
     }
 }

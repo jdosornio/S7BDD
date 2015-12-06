@@ -56,7 +56,7 @@ public interface Sitio extends Remote {
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public short update(String tabla, DataTable datos, Map attrWhere) throws RemoteException;
+    public short update(String tabla, DataTable datos, Map<String, ?> attrWhere) throws RemoteException;
     
     /**
      * Elimina todos los registros de una tabla dada que cumplan con las cláusulas
@@ -75,7 +75,7 @@ public interface Sitio extends Remote {
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public short delete(String tabla, Map attrWhere) throws RemoteException;
+    public short delete(String tabla, Map<String, ?> attrWhere) throws RemoteException;
     
     /**
      * Este método sirve para indicar al nodo que se debe realizar un commit
