@@ -542,6 +542,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s2IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.173.156"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[1] = s2IP;"/>
       </AuxValues>
@@ -579,6 +582,9 @@
       </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="s3IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.173.1"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[2] = s3IP;"/>
       </AuxValues>
@@ -632,6 +638,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s4IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.173.201"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[3] = s4IP;"/>
       </AuxValues>
@@ -685,6 +694,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s5IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.173.34"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[4] = s5IP;"/>
       </AuxValues>
@@ -738,6 +750,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s6IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.173.155"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[5] = s6IP;"/>
       </AuxValues>
@@ -791,6 +806,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s7IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.173.199"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel30">
       <Properties>

@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.dto.DataTable;
+import modelo.util.ConnectionManager;
 import remote.Sitio;
 import remote.util.InterfaceManager;
+import remote.util.InterfaceManager.Interfaces;
 import remote.util.QueryManager;
 
 /**
@@ -50,8 +52,17 @@ public class TransactionManager {
     public static void commit() throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
         
+        //Commit local
+        ConnectionManager.commit();
+        ConnectionManager.cerrar();
+        
         //Obtener todas las interfaces de sitio
         for (InterfaceManager.Interfaces interfaceSitio : InterfaceManager.Interfaces.values()) {
+            
+            if(interfaceSitio.equals(Interfaces.LOCALHOST)) {
+                continue;
+            }
+            
             Runnable hacerCommit = new Runnable() {
                 @Override
                 public void run() {
@@ -86,8 +97,17 @@ public class TransactionManager {
     public static void rollback() throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
         
+        //Rollback local
+        ConnectionManager.rollback();
+        ConnectionManager.cerrar();
+        
         //Obtener todas las interfaces de sitio
         for (InterfaceManager.Interfaces interfaceSitio : InterfaceManager.Interfaces.values()) {
+            
+            if(interfaceSitio.equals(Interfaces.LOCALHOST)) {
+                continue;
+            }
+            
             Runnable hacerRollback = new Runnable() {
                 @Override
                 public void run() {

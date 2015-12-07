@@ -119,6 +119,8 @@ public class BaseDAO {
             //ConnectionManager.cerrarTodo(ps, null);
         }
 
+        System.out.println("Id 1: " + data.getValueAt(0, 0));
+        
         return ok;
     }
 

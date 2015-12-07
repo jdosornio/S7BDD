@@ -83,11 +83,13 @@ public class QueryManager {
         List<Thread> hilosInsert = new ArrayList<>();
         
         //TRANSACTION_OK.set((short)1);
-        transactionOk = 1;
+        transactionOk = localInsert(savePKs, tablas, datos);
         
 //        System.out.println("Thread principal solicitante: transacionOk = 1");
         
-        uniInsert(savePKs, Interfaces.LOCALHOST, tablas, datos);
+//        uniInsert(savePKs, Interfaces.LOCALHOST, tablas, datos);
+        
+        System.out.println("savePKs: " + savePKs + " Id: " + datos[0].getValueAt(0, 0));
         
         //Obtener todas las interfaces de sitio
         for (Interfaces interfaceSitio : Interfaces.values()) {
@@ -138,5 +140,26 @@ public class QueryManager {
                 transactionOk);
         
         return transactionOk;
+    }
+    
+    public static short localInsert(boolean savePKs, String[] tablas,
+            DataTable ... datos) {
+        
+        short ok = 1;
+        BaseDAO dao = new BaseDAO();
+        //Insertar todas las tablas....
+        for (int i = 0; i < tablas.length; i++) {
+            boolean noError = dao.add(tablas[i], datos[i], savePKs);
+            
+            if (!noError) {
+                ok = 0;
+                break;
+            }
+        }
+        
+        System.out.println("Inserción de " + tablas.length + " tablas, resultado: " +
+                ok);
+        
+        return ok;
     }
 }
