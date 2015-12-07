@@ -25,6 +25,7 @@ public class TransactionManager {
     public static boolean insertReplicado(String[] tablas, DataTable ... datos) {
         boolean ok = true;
         
+        System.out.println("---------Start Global transaction----------");
         try {
             short result = QueryManager.broadInsert(tablas, datos);
             
@@ -38,8 +39,10 @@ public class TransactionManager {
             
         } catch (InterruptedException ex) {
             Logger.getLogger(TransactionManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = false;
         }
         
+        System.out.println("---------End Global transaction----------");
         return ok;
     }
     
