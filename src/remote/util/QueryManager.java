@@ -5,6 +5,7 @@
  */
 package remote.util;
 
+import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -21,8 +22,9 @@ import remote.util.InterfaceManager.Interfaces;
  */
 public class QueryManager {
     
-    private static ThreadLocal<Short> transactionOk;
+    private static final ThreadLocal<Short> TRANSACTION_OK = new ThreadLocal<>();
     
+    private static volatile short transactionOk;
     /**
      * Inserta los datos de todas las tablas en la interface del sitio elegido.
      * 
@@ -46,8 +48,12 @@ public class QueryManager {
                 ok = sitio.insert(tablas, datos);
             }
             
+        } catch (ConnectException ex) {
+            Logger.getLogger(QueryManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = 0;
         } catch (RemoteException | NotBoundException ex) {
             Logger.getLogger(QueryManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = 0;
         }
         
         return ok;
@@ -64,11 +70,13 @@ public class QueryManager {
      * @return 1 en caso de que todo ocurra normalmente, 0 en caso contrario.
      * @throws InterruptedException en caso de que ocurra un error con los threads
      */
-    public static short broadInsert(String[] tablas, DataTable ... datos)
+    public static synchronized short broadInsert(String[] tablas, DataTable ... datos)
             throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
         
-        transactionOk.set((short)1);
+        //TRANSACTION_OK.set((short)1);
+        transactionOk = 1;
+        
         System.out.println("Thread principal solicitante: transacionOk = 1");
         
         //Obtener todas las interfaces de sitio
@@ -76,20 +84,26 @@ public class QueryManager {
             Runnable insertar = new Runnable() {
                 @Override
                 public void run() {
-                    short resultadoTodos = transactionOk.get();
+//                    short resultadoTodos = TRANSACTION_OK.get();
+//                    System.out.println("Thread de inserción a la interface: " + 
+//                            interfaceSitio + ", resultadoTodos = " + resultadoTodos);
                     System.out.println("Thread de inserción a la interface: " + 
-                            interfaceSitio + ", resultadoTodos = " + resultadoTodos);
+                            interfaceSitio + ", resultadoTodos = " + transactionOk);
+                    
                     
                     short resultadoActual = uniInsert(interfaceSitio, tablas, datos);
+                    
                     System.out.println("Thread de inserción a la interface: " + 
                             interfaceSitio + ", resultadoActual = " + resultadoActual);
                     
-                    short resultadoNuevo = (short)(resultadoTodos * resultadoActual);
+                    //short resultadoNuevo = (short)(resultadoTodos * resultadoActual);
                     
-                    transactionOk.set(resultadoNuevo);
+                    //TRANSACTION_OK.set(resultadoNuevo);
+                    
+                    transactionOk *= (short) resultadoActual;
                     
                     System.out.println("Thread de inserción a la interface: " + 
-                            interfaceSitio + ", resultadoNuevo = " + resultadoNuevo);
+                            interfaceSitio + ", resultadoNuevo = " + transactionOk);
                 }
             };
             
@@ -102,9 +116,12 @@ public class QueryManager {
             hilo.join();
         }
         
+//        System.out.println("Thread principal solicitante: transactionOk = " + 
+//                TRANSACTION_OK.get());
+
         System.out.println("Thread principal solicitante: transactionOk = " + 
-                transactionOk.get());
+                transactionOk);
         
-        return transactionOk.get();
+        return transactionOk;
     }
 }
