@@ -8,7 +8,9 @@ package modelo.dao;
 import modelo.util.ConnectionManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,7 @@ import modelo.dto.DataTable;
  */
 public class BaseDAO {
 
-    public boolean add(String tableName, DataTable data) {
+    public boolean add(String tableName, DataTable data, boolean savePKs) {
         PreparedStatement ps = null;
         Connection conexion;
         boolean ok = true;
@@ -37,6 +39,12 @@ public class BaseDAO {
         try {
             //Crear query
             for (int i = 0; i < data.getColumnCount() - 1; i++) {
+                if (savePKs && i == 0) {
+                    //Si se quieren guardar las llaves primarias entonces
+                    //ignorar la llave primaria que es la columna 1.
+                    continue;
+                }
+                
                 insertQuery += data.getColumnName(i) + ", ";
                 valuesSection += "?, ";
             }
@@ -50,19 +58,54 @@ public class BaseDAO {
 
             conexion = ConnectionManager.conectar();
 
-            ps = conexion.prepareStatement(insertQuery);
+            //Si se desea guardar las llaves generadas o no
+            if(savePKs) {
+                //Devolver la columna de llave primaria (primera)
+                ps = conexion.prepareStatement(insertQuery,
+                        new String[] {data.getColumnName(0)});
+            } else {
+                ps = conexion.prepareStatement(insertQuery);
+            }
+            
             //Cargar datos...
             //Reiniciar por si las dudas...
             data.rewind();
             
             while (data.next()) {
                 for (int i = 0; i < data.getColumnCount(); i++) {
-                    ps.setObject(i + 1, data.getObject(data.getColumnName(i)));
+                    //Posicion del preparedStatement
+                    int psPos = i + 1;
+                    //Si se desea guardar las llaves generadas ignorar la pk
+                    if (savePKs) {
+                        if (i == 0) {
+                            continue;
+                        }
+                        else {
+                            psPos--;
+                        }
+                    }
+                    
+                    ps.setObject(psPos, data.getObject(data.getColumnName(i)));
                 }
-                ps.addBatch();
+                //Ejecutar insert uno a uno para obtener la llave primaria
+                ps.executeUpdate();
+                
+                if (savePKs) {
+                    //Obtener llave primaria generada
+                    try (ResultSet rsPK = ps.getGeneratedKeys()) {
+                        
+                        if(rsPK.next()) {
+                            //Guardar llave primaria generada en el DataTable
+                            data.setObject(data.getColumnName(0), rsPK.getObject(1));       
+                        }
+                    }
+                }
             }
-
-            ps.executeBatch();
+            
+            //Si se guardaron llaves primarias regresar al inicio
+            if (savePKs) {
+                data.rewind();
+            }
 
             //ConnectionManager.commit();
         } catch (SQLException ex) {
@@ -253,13 +296,61 @@ public class BaseDAO {
 //        
 //        ConnectionManager.commit();
 //    }
+//    public static void main(String[] args) {
+//        HashMap<String, Object> attrWhere = new HashMap<>();
+//        
+//        attrWhere.put("numero", "777");
+//        
+//        new BaseDAO().delete("empleado", attrWhere);
+//        
+//        ConnectionManager.commit();
+//    }
+    
+//    public static void main(String[] args) {
+//        //Prueba insert con y sin recuperación de llaves primarias
+//        String[] columns = {"id", "nombre", "descripcion", "tipo_evento_id"};
+//        Object[][] data = {
+//            {null, "EVENTO DE PRUEBA 1", "DESCRIPCION 1", 2},
+//            {null, "EVENTO DE PRUEBA 2", "DESCRIPCION 2", 1},
+//            {null, "EVENTO DE PRUEBA 3", "DESCRIPCION 3", 2}
+//        };
+//        
+//        DataTable dtInsert = new DataTable(columns, data);
+//        
+//        //Regresar los ids...
+//        new BaseDAO().add("evento", dtInsert, true);
+//        
+//        int i = 0;
+//        while(dtInsert.next()) {
+//            System.out.println("PK [" + (i + 1) + "]: " + dtInsert.getInt("id"));
+//            i++;
+//        }
+//        
+//        ConnectionManager.commit();
+//        ConnectionManager.cerrar();
+//    }
+    
     public static void main(String[] args) {
-        HashMap<String, Object> attrWhere = new HashMap<>();
+        //Prueba insert con y sin recuperación de llaves primarias
+        String[] columns = {"id", "nombre", "descripcion", "tipo_evento_id"};
+        Object[][] data = {
+            {7, "EVENTO DE PRUEBA 1", "DESCRIPCION 1", 2},
+            {8, "EVENTO DE PRUEBA 2", "DESCRIPCION 2", 1},
+            {9, "EVENTO DE PRUEBA 3", "DESCRIPCION 3", 2}
+        };
         
-        attrWhere.put("numero", "777");
+        DataTable dtInsert = new DataTable(columns, data);
         
-        new BaseDAO().delete("empleado", attrWhere);
+        //Regresar los ids...
+        new BaseDAO().add("evento", dtInsert, false);
+        
+        int i = 0;
+        while(dtInsert.next()) {
+            System.out.println("PK [" + (i + 1) + "]: " + dtInsert.getInt("id"));
+            i++;
+        }
         
         ConnectionManager.commit();
+        ConnectionManager.cerrar();
     }
 }

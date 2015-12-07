@@ -25,7 +25,7 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
 
     @Override
     public boolean insert(String[] tablas, DataTable... datos) throws RemoteException {
-        boolean ok = true;
+        boolean ok;
         
         //Tablas y datatables
         List<String> tablasReplicadas = new ArrayList<>();
@@ -45,7 +45,8 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
         String[] tablasReplicadasArr = new String[tablasReplicadas.size()];
         DataTable[] dtReplicadosArr = new DataTable[dtReplicados.size()];
         
-        ok = TransactionManager.insertReplicado(tablasReplicadas.toArray(tablasReplicadasArr), 
+        ok = TransactionManager.insertReplicado(true,
+                tablasReplicadas.toArray(tablasReplicadasArr), 
                 dtReplicados.toArray(dtReplicadosArr));
         
         //Mandar las tablas a insertar a todos los nodos

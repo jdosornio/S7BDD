@@ -68,7 +68,7 @@ public class DataTable extends AbstractTableModel {
     /**
      * Crea un nuevo DataTable con las columnas y la matriz proporcionada,
      * también posiciona el cursor una posición antes del primer registro.
-     * El DataTable se crea en modo de sólo lectura.
+     * El DataTable se crea en modo de escritura.
      * 
      * @param columns el arreglo de nombres de columnas
      * @param data la matriz de datos
@@ -78,7 +78,6 @@ public class DataTable extends AbstractTableModel {
         this.columns = columns;
         this.data = data;
         
-        readOnly = true;
     }
     
     /**
@@ -183,7 +182,7 @@ public class DataTable extends AbstractTableModel {
         int indx = -1;
         
         for (int i = 0; i < columns.length; i++) {
-            if(columns[i].equals(name)) {
+            if(columns[i].equalsIgnoreCase(name)) {
                 indx = i;
                 break;
             }
@@ -424,5 +423,50 @@ public class DataTable extends AbstractTableModel {
      */
     public void rewind() {
         currentIndex = -1;
+    }
+    
+    public DataTable[] fragmentarVertical(String[] frag1, String[] frag2) {
+        DataTable dts[] = new DataTable[2];
+
+        Object[][] data1 = new Object[this.getRowCount()][frag1.length];
+
+        Object[][] data2 = new Object[this.getRowCount()][frag2.length];
+
+        //Recorremos los atributos que se desea que tenga el fragmento 1
+        for (int i = 0; i < frag1.length; i++) {
+            //Obtenemos la columa a la que pertenece el atributo
+            int ndx = this.getColumnIndex(frag1[i]);
+            //Recorremos toda la columna para almacenar sus datos en una
+            //nueva matriz
+            for (int j = 0; j < this.getRowCount(); j++) {
+                //Se almacena la información del atributo deseado 
+                //j iterará por la columna de principio a fin
+                //i es el indice de la columna del fragmento nuevo
+                //ndx es el indice de la columna donde se encontro el nombre del
+                //atributo deseado a copiar al fragmento nuevo
+                data1[j][i] = this.getValueAt(j, ndx);
+            }
+        }
+
+        //Recorremos los atributos que se desea que tenga el fragmento 1
+        for (int i = 0; i < frag2.length; i++) {
+            //Obtenemos la columa a la que pertenece el atributo
+            int ndx = this.getColumnIndex(frag2[i]);
+            //Recorremos toda la columna para almacenar sus datos en una
+            //nueva matriz
+            for (int j = 0; j < this.getRowCount(); j++) {
+                //Se almacena la información del atributo deseado 
+                //j iterará por la columna de principio a fin
+                //i es el indice de la columna del fragmento nuevo
+                //ndx es el indice de la columna donde se encontro el nombre del
+                //atributo deseado a copiar al fragmento nuevo
+                data2[j][i] = this.getValueAt(j, ndx);
+            }
+        }
+
+        dts[0] = new DataTable(frag1, data1);
+        dts[1] = new DataTable(frag2, data2);
+
+        return dts;
     }
 }

@@ -22,12 +22,13 @@ import remote.util.QueryManager;
  */
 public class TransactionManager {
     
-    public static boolean insertReplicado(String[] tablas, DataTable ... datos) {
+    public static boolean insertReplicado(boolean savePKs, String[] tablas,
+            DataTable ... datos) {
         boolean ok = true;
         
         System.out.println("---------Start Global transaction----------");
         try {
-            short result = QueryManager.broadInsert(tablas, datos);
+            short result = QueryManager.broadInsert(savePKs, tablas, datos);
             
             if(result == 0) {
                 ok = false;

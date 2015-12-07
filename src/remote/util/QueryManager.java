@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modelo.dao.BaseDAO;
 import modelo.dto.DataTable;
 import remote.Sitio;
 import remote.util.InterfaceManager.Interfaces;
@@ -28,6 +29,7 @@ public class QueryManager {
     /**
      * Inserta los datos de todas las tablas en la interface del sitio elegido.
      * 
+     * @param savePKs guardar las llaves primarias generadas
      * @param interfaceSitio la interface del sitio al que se desea insertar
      * @param tablas el arreglo de nombres de tablas donde se insertará
      * @param datos el arreglo de DataTables que se desean insertar en el orden
@@ -35,7 +37,8 @@ public class QueryManager {
      * 
      * @return 1 en caso de que todo ocurra normalmente, 0 en caso contrario.
      */
-    public static short uniInsert(Interfaces interfaceSitio, String[] tablas,
+    public static short uniInsert(boolean savePKs, Interfaces interfaceSitio,
+            String[] tablas,
             DataTable ... datos) {
         short ok = 1;
         try {
@@ -45,7 +48,7 @@ public class QueryManager {
             
             //insertar los datos
             if(sitio != null) {
-                ok = sitio.insert(tablas, datos);
+                ok = sitio.insert(savePKs, tablas, datos);
                 
                 System.out.println("Insert en el sitio: " + 
                             interfaceSitio + ", resultado = " + ok);
@@ -66,6 +69,7 @@ public class QueryManager {
      * Inserta los datos de todas las tablas en todos los sitios que están
      * registrados en este nodo.
      * 
+     * @param savePKs guardar las llaves primarias generadas
      * @param tablas el arreglo de nombres de tablas donde se insertará
      * @param datos el arreglo de DataTables que se desean insertar en el orden
      * en el que están los nombres de las tablas en el arreglo
@@ -73,7 +77,8 @@ public class QueryManager {
      * @return 1 en caso de que todo ocurra normalmente, 0 en caso contrario.
      * @throws InterruptedException en caso de que ocurra un error con los threads
      */
-    public static synchronized short broadInsert(String[] tablas, DataTable ... datos)
+    public static synchronized short broadInsert(boolean savePKs, String[] tablas,
+            DataTable ... datos)
             throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
         
@@ -82,8 +87,15 @@ public class QueryManager {
         
 //        System.out.println("Thread principal solicitante: transacionOk = 1");
         
+        uniInsert(savePKs, Interfaces.LOCALHOST, tablas, datos);
+        
         //Obtener todas las interfaces de sitio
         for (Interfaces interfaceSitio : Interfaces.values()) {
+            
+            if(interfaceSitio.equals(Interfaces.LOCALHOST)) {
+                continue;
+            }
+            
             Runnable insertar = new Runnable() {
                 @Override
                 public void run() {
@@ -94,7 +106,7 @@ public class QueryManager {
 //                            interfaceSitio + ", resultadoTodos = " + transactionOk);
                     
                     
-                    short resultadoActual = uniInsert(interfaceSitio, tablas, datos);
+                    short resultadoActual = uniInsert(false, interfaceSitio, tablas, datos);
                     
 //                    System.out.println("Thread de inserción a la interface: " + 
 //                            interfaceSitio + ", resultadoActual = " + resultadoActual);

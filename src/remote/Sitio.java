@@ -20,6 +20,7 @@ public interface Sitio extends Remote {
      * Inserta secuencialmente todos los datos de un DataTable en su tabla
      * correspondiente segun el nombre de la tabla
      * 
+     * @param savePKs guardar las llaves primarias
      * @param tablas los nombres de las tablas a las que se desean insertar
      * datos, éstas tablas deben estar en el orden de inserción necesario para
      * que todas las tablas se puedan insertar sin que haya problemas de
@@ -34,7 +35,8 @@ public interface Sitio extends Remote {
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public short insert(String[] tablas, DataTable ... datos) throws RemoteException;
+    public short insert(boolean savePKs, String[] tablas, DataTable ... datos)
+            throws RemoteException;
     
     /**
      * Actualiza los datos de un DataTable en la tabla con el nombre suministrado
