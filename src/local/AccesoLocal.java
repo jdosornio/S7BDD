@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 import modelo.dao.BaseDAO;
-import modelo.dao.ConnectionManager;
+import modelo.util.ConnectionManager;
 import modelo.dao.EmpleadoDAO;
 import modelo.dto.DataTable;
 import remote.Sitio7Int;

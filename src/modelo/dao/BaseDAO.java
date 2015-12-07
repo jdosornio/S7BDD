@@ -5,6 +5,7 @@
  */
 package modelo.dao;
 
+import modelo.util.ConnectionManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

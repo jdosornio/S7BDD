@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modelo.dao;
+package modelo.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -107,7 +107,7 @@ public class ConnectionManager {
         Connection con = conexion.get();
 
         try {
-            if (con != null && !con.isClosed()) {
+            if (con != null /*&& !con.isClosed()*/) {
                 con.close();
                 conexion.set(null);
             }

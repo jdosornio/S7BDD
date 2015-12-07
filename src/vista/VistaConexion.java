@@ -13,7 +13,8 @@ import javax.swing.JTextField;
 import local.AccesoLocal;
 import local.InicioServidor;
 import local.PersistenciaImpl;
-import remote.InterfaceManager;
+import remote.util.InterfaceManager;
+import remote.util.InterfaceManager.Interfaces;
 
 /**
  *
@@ -577,21 +578,30 @@ public class VistaConexion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void iniciarServidor(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iniciarServidor
-        //Sitio
-        String serverIp = s7IP.getText();
-        int serverPuerto = Integer.parseInt(s7Puerto.getText());
-        String serverInt = s7Int.getText();
-        
-        //Persistencia
-        int puerto = Integer.parseInt(persistPuerto.getText());
-        String intfP = persistInt.getText();
-        
-        //Declarar la ip de esta computadora (linux)
-        System.setProperty("java.rmi.server.hostname", serverIp);
-        
-        //Iniciar servicios
-        InicioServidor.iniciarServidor(serverPuerto, serverInt, AccesoLocal.class);
-        InicioServidor.iniciarServidor(puerto, intfP, PersistenciaImpl.class);
+        try {
+            //Sitio
+            String serverIp = s7IP.getText();
+            int serverPuerto = Integer.parseInt(s7Puerto.getText());
+            String serverInt = s7Int.getText();
+            
+            //Persistencia
+            int puerto = Integer.parseInt(persistPuerto.getText());
+            String intfP = persistInt.getText();
+            
+            //Declarar la ip de esta computadora (linux)
+            System.setProperty("java.rmi.server.hostname", serverIp);
+            
+            //Iniciar servicios
+            InicioServidor.iniciarServidor(serverPuerto, serverInt, AccesoLocal.class);
+            InicioServidor.iniciarServidor(puerto, intfP, PersistenciaImpl.class);
+            
+            //Guardar la interface de este mismo nodo
+            InterfaceManager.addInterface("127.0.0.1", serverPuerto, serverInt);
+            InterfaceManager.setInterfaceServicio(Interfaces.LOCALHOST, serverInt);
+            
+        } catch (RemoteException | NotBoundException ex) {
+            Logger.getLogger(VistaConexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }//GEN-LAST:event_iniciarServidor
 
@@ -605,8 +615,11 @@ public class VistaConexion extends javax.swing.JFrame {
             if (!ip.isEmpty() && !puerto.isEmpty() && !intf.isEmpty()) {
                 try {
                     InterfaceManager.addInterface(ip, Integer.parseInt(puerto), intf);
-                    System.out.println("Inteface added: " + intf + " ip: " + ip +
-                            " en puerto: " + puerto);
+                    //guardar el nombre de la interface
+                    String interfaceSitio = "SITIO_" + (i + 1);
+                    
+                    InterfaceManager.setInterfaceServicio(
+                            Interfaces.valueOf(interfaceSitio), intf);
                     
                 } catch (RemoteException | NotBoundException ex) {
                     Logger.getLogger(VistaConexion.class.getName()).log(Level.SEVERE, null, ex);
