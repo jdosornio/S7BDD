@@ -46,6 +46,9 @@ public class QueryManager {
             //insertar los datos
             if(sitio != null) {
                 ok = sitio.insert(tablas, datos);
+                
+                System.out.println("Insert en el sitio: " + 
+                            interfaceSitio + ", resultado = " + ok);
             }
             
         } catch (ConnectException ex) {
@@ -77,7 +80,7 @@ public class QueryManager {
         //TRANSACTION_OK.set((short)1);
         transactionOk = 1;
         
-        System.out.println("Thread principal solicitante: transacionOk = 1");
+//        System.out.println("Thread principal solicitante: transacionOk = 1");
         
         //Obtener todas las interfaces de sitio
         for (Interfaces interfaceSitio : Interfaces.values()) {
@@ -87,14 +90,14 @@ public class QueryManager {
 //                    short resultadoTodos = TRANSACTION_OK.get();
 //                    System.out.println("Thread de inserción a la interface: " + 
 //                            interfaceSitio + ", resultadoTodos = " + resultadoTodos);
-                    System.out.println("Thread de inserción a la interface: " + 
-                            interfaceSitio + ", resultadoTodos = " + transactionOk);
+//                    System.out.println("Thread de inserción a la interface: " + 
+//                            interfaceSitio + ", resultadoTodos = " + transactionOk);
                     
                     
                     short resultadoActual = uniInsert(interfaceSitio, tablas, datos);
                     
-                    System.out.println("Thread de inserción a la interface: " + 
-                            interfaceSitio + ", resultadoActual = " + resultadoActual);
+//                    System.out.println("Thread de inserción a la interface: " + 
+//                            interfaceSitio + ", resultadoActual = " + resultadoActual);
                     
                     //short resultadoNuevo = (short)(resultadoTodos * resultadoActual);
                     
@@ -102,8 +105,8 @@ public class QueryManager {
                     
                     transactionOk *= (short) resultadoActual;
                     
-                    System.out.println("Thread de inserción a la interface: " + 
-                            interfaceSitio + ", resultadoNuevo = " + transactionOk);
+//                    System.out.println("Thread de inserción a la interface: " + 
+//                            interfaceSitio + ", resultadoNuevo = " + transactionOk);
                 }
             };
             
