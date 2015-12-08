@@ -85,6 +85,8 @@ public interface Sitio extends Remote {
      * @param tabla nombre de la tabla donde se hará la consulta
      * @param columnas los nombres de las columnas de la tabla que se desean
      * obtener
+     * @param aliases los nombres de los aliases que se desean por cada columna
+     * ordenados igual que lo nombres de columna, null si no se desea alias.
      * @param attrWhere hashmap que contiene las condiciones where, con la llave
      * como columna y el valor como el valor que tomará la columna en el query.
      * Si ese hashmap es null, entonces se devolverán todos los registros
@@ -95,7 +97,7 @@ public interface Sitio extends Remote {
      * 
      * @throws RemoteException en caso de que ocurra un error remoto.
      */
-    public DataTable get(String tabla, String[] columnas,
+    public DataTable get(String tabla, String[] columnas, String[] aliases,
             Map<String, ?> attrWhere) throws RemoteException;
     
     /**

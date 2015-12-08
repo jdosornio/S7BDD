@@ -85,10 +85,10 @@ public class AccesoLocal extends UnicastRemoteObject implements Sitio7Int {
     }
     
     @Override
-    public DataTable get(String tabla, String[] columnas, 
+    public DataTable get(String tabla, String[] columnas, String[] aliases,
             Map<String, ?> attrWhere) throws RemoteException {
         
-        return new BaseDAO().get(tabla, columnas, attrWhere);
+        return new BaseDAO().get(tabla, columnas, aliases, attrWhere);
     }
 
     @Override

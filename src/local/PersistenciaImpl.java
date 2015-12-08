@@ -69,7 +69,7 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
     }
 
     @Override
-    public DataTable get(String tabla, String[] columnas, 
+    public DataTable get(String tabla, String[] columnas, String[] aliases, 
             Map<String, ?> attrWhere) throws RemoteException {
 
         DataTable dt = null;
@@ -78,7 +78,7 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
                 && !tabla.equalsIgnoreCase("plantel")
                 && !tabla.equalsIgnoreCase("implementacion_evento_empleado")) {
             //Todas son consultas locales....
-            dt = new BaseDAO().get(tabla, columnas, attrWhere);
+            dt = new BaseDAO().get(tabla, columnas, aliases, attrWhere);
         }
         
         return dt;

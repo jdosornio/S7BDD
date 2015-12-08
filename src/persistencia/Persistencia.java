@@ -84,6 +84,8 @@ public interface Persistencia extends Remote {
      * @param tabla el nombre de la tabla donde se desean consultar los registros
      * @param columnas los nombres de las columnas de la tabla que se desean
      * obtener
+     * @param aliases los nombres de los aliases de las columnas en el mismo orden,
+     * null en caso de que no se desee alias por esa columna
      * @param attrWhere un mapa que contiene las cláusulas where para consultar un
      * registro de la tabla, donde la llave es el nombre de la columna y el
      * valor el valor que esa columna debe tomar para que se obtenga ese
@@ -97,6 +99,7 @@ public interface Persistencia extends Remote {
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public DataTable get(String tabla, String[] columnas, Map<String, ?> attrWhere)
+    public DataTable get(String tabla, String[] columnas, String[] aliases,
+            Map<String, ?> attrWhere)
             throws RemoteException;
 }

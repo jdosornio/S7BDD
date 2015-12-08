@@ -105,7 +105,7 @@ public class TransactionManager {
                 mapa.put("id", datos.getInt("plantel_id"));
                 BaseDAO dao = new BaseDAO();
 
-                DataTable plantel = dao.get("plantel", null, mapa);
+                DataTable plantel = dao.get("plantel", null, null, mapa);
 
                 //se verifica en su nodo si se encuentra el plantel al que se insertara
                 // cambiar por sus nodos el nombre de la variable de sitio y la interface
@@ -128,8 +128,8 @@ public class TransactionManager {
                     Sitio sitio2 = InterfaceManager.getInterface(InterfaceManager.
                             getInterfaceServicio(Interfaces.SITIO_2));
 
-                    if (sitio2.get("plantel", null, mapa) != null && 
-                            sitio2.get("plantel", null, mapa).getRowCount() != 0) {
+                    if (sitio2.get("plantel", null, null, mapa) != null && 
+                            sitio2.get("plantel", null, null, mapa).getRowCount() != 0) {
 
                         //aqui se encuentra
                         fragmentos = datos.fragmentarVertical(fragDatos, fragLlaves);
@@ -146,8 +146,8 @@ public class TransactionManager {
                         //aqui se veririca la zona 3
                         Sitio sitio7 = InterfaceManager.getInterface(InterfaceManager.
                                 getInterfaceServicio(Interfaces.SITIO_7));
-                        if (sitio7.get("plantel", null, mapa) != null &&
-                                sitio7.get("plantel", null, mapa).getRowCount() != 0) {
+                        if (sitio7.get("plantel", null, null, mapa) != null &&
+                                sitio7.get("plantel", null, null, mapa).getRowCount() != 0) {
 
                             //aqui se encuentra
                             fragmentos = datos.fragmentarVertical(fragDatos, fragLlaves);

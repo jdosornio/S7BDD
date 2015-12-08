@@ -285,7 +285,7 @@ public class BaseDAO {
     }
     
     public DataTable get(String tableName, String[] projectColumns,
-            Map<String, ?> attrWhere) {
+            String[] projectAliases, Map<String, ?> attrWhere) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Connection conexion;
@@ -295,12 +295,24 @@ public class BaseDAO {
         try {
         //Crear query
         //Project columns...
-        if (projectColumns != null && projectColumns.length > 0) {
+        if (projectColumns != null && projectColumns.length > 0 &&
+                projectAliases != null && projectAliases.length == projectColumns.length) {
             
             for (int i = 0; i < projectColumns.length - 1; i++) {
-                selectQuery += projectColumns[i] += ", ";
+                selectQuery += projectColumns[i];
+                
+                if (projectAliases[i] != null && !projectAliases[i].isEmpty()) {
+                    selectQuery += " AS " + projectAliases[i];
+                }
+                
+                selectQuery += ", ";
             }
             selectQuery += projectColumns[projectColumns.length - 1];
+            
+            if (projectAliases[projectAliases.length - 1] != null &&
+                    !projectAliases[projectAliases.length - 1].isEmpty()) {
+                selectQuery += " AS " + projectAliases[projectAliases.length - 1];
+            }
             
         } else {
             selectQuery += "*";
@@ -375,13 +387,20 @@ public class BaseDAO {
     public static void main(String[] args) {
         Map<String, Object> attrWhere = new HashMap<>();
         
-        attrWhere.put("id", 4);
+        attrWhere.put("id >", 4);
+        //attrWhere.put("tipo_evento_id", 3);
         
-        DataTable dt = new BaseDAO().get("evento", null, null);
+        
+        DataTable dt = new BaseDAO().get("evento", new String[]{"nombre"},
+                new String[]{"nombre_evento"}, attrWhere);
         
         if(dt != null) {
             while(dt.next()) {
-                System.out.println("Nombre:" + dt.getString("nombre"));
+                for (int i = 0; i < dt.getColumnCount(); i++) {
+                    System.out.print(dt.getColumnName(i) + "---> " +
+                            dt.getObject(dt.getColumnName(i)) + " || ");
+                }
+                System.out.println("");
             }
         }
     }
