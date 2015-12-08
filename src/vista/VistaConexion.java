@@ -171,8 +171,6 @@ public class VistaConexion extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel6.setText("IP:");
 
-        s2IP.setText("192.168.173.156");
-
         jLabel7.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel7.setText("Puerto:");
 
@@ -182,8 +180,6 @@ public class VistaConexion extends javax.swing.JFrame {
         jLabel24.setText("Interface:");
 
         s2Int.setText("Sitio2Capacisoft");
-
-        s3IP.setText("192.168.173.1");
 
         jLabel8.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel8.setText("Puerto:");
@@ -201,8 +197,6 @@ public class VistaConexion extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel10.setText("IP:");
 
-        s4IP.setText("192.168.173.201");
-
         jLabel14.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel14.setText("Puerto:");
 
@@ -218,8 +212,6 @@ public class VistaConexion extends javax.swing.JFrame {
 
         jLabel16.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel16.setText("IP:");
-
-        s5IP.setText("192.168.173.34");
 
         jLabel17.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel17.setText("Puerto:");
@@ -237,8 +229,6 @@ public class VistaConexion extends javax.swing.JFrame {
         jLabel19.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel19.setText("IP:");
 
-        s6IP.setText("192.168.173.155");
-
         jLabel20.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel20.setText("Puerto:");
 
@@ -254,8 +244,6 @@ public class VistaConexion extends javax.swing.JFrame {
 
         jLabel22.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel22.setText("IP:");
-
-        s7IP.setText("192.168.173.199");
 
         jLabel30.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel30.setText("Puerto:");

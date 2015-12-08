@@ -80,6 +80,22 @@ public interface Sitio extends Remote {
     public short delete(String tabla, Map<String, ?> attrWhere) throws RemoteException;
     
     /**
+     * Obtener el resultado de la consulta en la tabla elegida.
+     * 
+     * @param tabla nombre de la tabla donde se hará la consulta
+     * @param attrWhere hashmap que contiene las condiciones where, con la llave
+     * como columna y el valor como el valor que tomará la columna en el query.
+     * Si ese hashmap es null, entonces se devolverán todos los registros
+     * 
+     * @return el objeto DataTable con los registros que se obtuvieron, un DataTable
+     * vacío en caso de que no se hayan encontrado registros o null en caso de que
+     * haya ocurrido un error con la base de datos.
+     * 
+     * @throws RemoteException en caso de que ocurra un error remoto.
+     */
+    public DataTable get(String tabla, Map<String, ?> attrWhere) throws RemoteException;
+    
+    /**
      * Este método sirve para indicar al nodo que se debe realizar un commit
      * de los cambios realizados en su base de datos
      * 

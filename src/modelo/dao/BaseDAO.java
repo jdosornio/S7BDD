@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -284,6 +283,79 @@ public class BaseDAO {
         }
         return ok;
     }
+    
+    public DataTable get(String tableName, Map<String, ?> attrWhere) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection conexion;
+        DataTable dt = new DataTable();
+        String selectQuery = "SELECT * FROM " + tableName;
+
+        try {
+        //Crear query
+        //WHERE clauses...
+            if (attrWhere != null && !attrWhere.isEmpty()) {
+                selectQuery += " WHERE ";
+                List<String> attrs = new ArrayList<>(attrWhere.keySet());
+
+                for (int i = 0; i < attrs.size() - 1; i++) {
+                    String key = attrs.get(i).toLowerCase();
+
+                    selectQuery += key + " ";
+
+                    if (!key.contains("=") && !key.contains("<")
+                            && !key.contains(">") && !key.endsWith("like")) {
+                        selectQuery += "= ";
+                    }
+
+                    selectQuery += "? AND ";
+                }
+                //Last one
+                String key = attrs.get(attrs.size() - 1).toLowerCase();
+
+                selectQuery += key + " ";
+
+                if (!key.contains("=") && !key.contains("<")
+                        && !key.contains(">") && !key.endsWith("like")) {
+                    selectQuery += "= ";
+                }
+
+                selectQuery += "?";
+            }
+
+        System.out.println(selectQuery);
+
+            conexion = ConnectionManager.conectar();
+
+            ps = conexion.prepareStatement(selectQuery);
+            //Cargar datos...
+            //WHERE
+            if (attrWhere != null && !attrWhere.isEmpty()) {
+                int paramNumber = 0;
+                
+                for (String key : attrWhere.keySet()) {
+                    ps.setObject(paramNumber + 1, attrWhere.get(key));
+                    paramNumber++;
+                }
+            }
+
+            rs = ps.executeQuery();
+
+            dt.populate(rs);
+            
+            //ConnectionManager.commit();
+        } catch (SQLException ex) {
+            //ConnectionManager.rollback();
+            //ConnectionManager.cerrar();
+            dt = null;
+            Logger.getLogger(BaseDAO.class.getName()).log(Level.SEVERE, null, ex);
+
+        } finally {
+            ConnectionManager.cerrarTodo(ps, rs);
+            //ConnectionManager.cerrarTodo(ps, null);
+        }
+        return dt;
+    }
 
 //    public static void main(String[] args) {
 //        String[] columns = {"segundo_nombre", "apellido_materno"};
@@ -332,27 +404,41 @@ public class BaseDAO {
 //        ConnectionManager.cerrar();
 //    }
     
+//    public static void main(String[] args) {
+//        //Prueba insert con y sin recuperación de llaves primarias
+//        String[] columns = {"id", "nombre", "descripcion", "tipo_evento_id"};
+//        Object[][] data = {
+//            {7, "EVENTO DE PRUEBA 1", "DESCRIPCION 1", 2},
+//            {8, "EVENTO DE PRUEBA 2", "DESCRIPCION 2", 1},
+//            {9, "EVENTO DE PRUEBA 3", "DESCRIPCION 3", 2}
+//        };
+//        
+//        DataTable dtInsert = new DataTable(columns, data);
+//        
+//        //Regresar los ids...
+//        new BaseDAO().add("evento", dtInsert, false);
+//        
+//        int i = 0;
+//        while(dtInsert.next()) {
+//            System.out.println("PK [" + (i + 1) + "]: " + dtInsert.getInt("id"));
+//            i++;
+//        }
+//        
+//        ConnectionManager.commit();
+//        ConnectionManager.cerrar();
+//    }
+    
     public static void main(String[] args) {
-        //Prueba insert con y sin recuperación de llaves primarias
-        String[] columns = {"id", "nombre", "descripcion", "tipo_evento_id"};
-        Object[][] data = {
-            {7, "EVENTO DE PRUEBA 1", "DESCRIPCION 1", 2},
-            {8, "EVENTO DE PRUEBA 2", "DESCRIPCION 2", 1},
-            {9, "EVENTO DE PRUEBA 3", "DESCRIPCION 3", 2}
-        };
+        Map<String, Object> attrWhere = new HashMap<>();
         
-        DataTable dtInsert = new DataTable(columns, data);
+        attrWhere.put("id", 9);
         
-        //Regresar los ids...
-        new BaseDAO().add("evento", dtInsert, false);
+        DataTable dt = new BaseDAO().get("plantel", attrWhere);
         
-        int i = 0;
-        while(dtInsert.next()) {
-            System.out.println("PK [" + (i + 1) + "]: " + dtInsert.getInt("id"));
-            i++;
+        if(dt != null) {
+            while(dt.next()) {
+                System.out.println("Nombre:" + dt.getString("nombre"));
+            }
         }
-        
-        ConnectionManager.commit();
-        ConnectionManager.cerrar();
     }
 }
