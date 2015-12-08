@@ -83,6 +83,8 @@ public interface Sitio extends Remote {
      * Obtener el resultado de la consulta en la tabla elegida.
      * 
      * @param tabla nombre de la tabla donde se hará la consulta
+     * @param columnas los nombres de las columnas de la tabla que se desean
+     * obtener
      * @param attrWhere hashmap que contiene las condiciones where, con la llave
      * como columna y el valor como el valor que tomará la columna en el query.
      * Si ese hashmap es null, entonces se devolverán todos los registros
@@ -93,7 +95,8 @@ public interface Sitio extends Remote {
      * 
      * @throws RemoteException en caso de que ocurra un error remoto.
      */
-    public DataTable get(String tabla, Map<String, ?> attrWhere) throws RemoteException;
+    public DataTable get(String tabla, String[] columnas,
+            Map<String, ?> attrWhere) throws RemoteException;
     
     /**
      * Este método sirve para indicar al nodo que se debe realizar un commit

@@ -284,15 +284,30 @@ public class BaseDAO {
         return ok;
     }
     
-    public DataTable get(String tableName, Map<String, ?> attrWhere) {
+    public DataTable get(String tableName, String[] projectColumns,
+            Map<String, ?> attrWhere) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Connection conexion;
         DataTable dt = new DataTable();
-        String selectQuery = "SELECT * FROM " + tableName;
+        String selectQuery = "SELECT ";
 
         try {
         //Crear query
+        //Project columns...
+        if (projectColumns != null && projectColumns.length > 0) {
+            
+            for (int i = 0; i < projectColumns.length - 1; i++) {
+                selectQuery += projectColumns[i] += ", ";
+            }
+            selectQuery += projectColumns[projectColumns.length - 1];
+            
+        } else {
+            selectQuery += "*";
+        }
+        
+        selectQuery += " FROM " + tableName;
+        
         //WHERE clauses...
             if (attrWhere != null && !attrWhere.isEmpty()) {
                 selectQuery += " WHERE ";
@@ -356,84 +371,13 @@ public class BaseDAO {
         }
         return dt;
     }
-
-//    public static void main(String[] args) {
-//        String[] columns = {"segundo_nombre", "apellido_materno"};
-//        Object[][] data = {{"Carlo", "Di Angelo"}};
-//        HashMap<String, Object> attrWhere = new HashMap<>();
-//        
-//        attrWhere.put("numero", "777");
-//        
-//        DataTable dt = new DataTable(columns, data);
-//        
-//        new BaseDAO().update("empleado", dt, attrWhere);
-//        
-//        ConnectionManager.commit();
-//    }
-//    public static void main(String[] args) {
-//        HashMap<String, Object> attrWhere = new HashMap<>();
-//        
-//        attrWhere.put("numero", "777");
-//        
-//        new BaseDAO().delete("empleado", attrWhere);
-//        
-//        ConnectionManager.commit();
-//    }
-    
-//    public static void main(String[] args) {
-//        //Prueba insert con y sin recuperación de llaves primarias
-//        String[] columns = {"id", "nombre", "descripcion", "tipo_evento_id"};
-//        Object[][] data = {
-//            {null, "EVENTO DE PRUEBA 1", "DESCRIPCION 1", 2},
-//            {null, "EVENTO DE PRUEBA 2", "DESCRIPCION 2", 1},
-//            {null, "EVENTO DE PRUEBA 3", "DESCRIPCION 3", 2}
-//        };
-//        
-//        DataTable dtInsert = new DataTable(columns, data);
-//        
-//        //Regresar los ids...
-//        new BaseDAO().add("evento", dtInsert, true);
-//        
-//        int i = 0;
-//        while(dtInsert.next()) {
-//            System.out.println("PK [" + (i + 1) + "]: " + dtInsert.getInt("id"));
-//            i++;
-//        }
-//        
-//        ConnectionManager.commit();
-//        ConnectionManager.cerrar();
-//    }
-    
-//    public static void main(String[] args) {
-//        //Prueba insert con y sin recuperación de llaves primarias
-//        String[] columns = {"id", "nombre", "descripcion", "tipo_evento_id"};
-//        Object[][] data = {
-//            {7, "EVENTO DE PRUEBA 1", "DESCRIPCION 1", 2},
-//            {8, "EVENTO DE PRUEBA 2", "DESCRIPCION 2", 1},
-//            {9, "EVENTO DE PRUEBA 3", "DESCRIPCION 3", 2}
-//        };
-//        
-//        DataTable dtInsert = new DataTable(columns, data);
-//        
-//        //Regresar los ids...
-//        new BaseDAO().add("evento", dtInsert, false);
-//        
-//        int i = 0;
-//        while(dtInsert.next()) {
-//            System.out.println("PK [" + (i + 1) + "]: " + dtInsert.getInt("id"));
-//            i++;
-//        }
-//        
-//        ConnectionManager.commit();
-//        ConnectionManager.cerrar();
-//    }
     
     public static void main(String[] args) {
         Map<String, Object> attrWhere = new HashMap<>();
         
-        attrWhere.put("id", 9);
+        attrWhere.put("id", 4);
         
-        DataTable dt = new BaseDAO().get("plantel", attrWhere);
+        DataTable dt = new BaseDAO().get("evento", null, null);
         
         if(dt != null) {
             while(dt.next()) {

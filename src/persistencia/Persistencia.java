@@ -49,7 +49,7 @@ public interface Persistencia extends Remote {
      * que esa columna debe tomar para que se actualicen los valores del DataTable
      * en ese registro
      * 
-     * @return true en caso de que la inserción se haya realizado de forma
+     * @return true en caso de que la actualización se haya realizado de forma
      * correcta, false en caso contrario.
      * 
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
@@ -68,7 +68,7 @@ public interface Persistencia extends Remote {
      * valor el valor que esa columna debe tomar para que se elimine ese
      * registro de la tabla
      * 
-     * @return true en caso de que la inserción se haya realizado de forma
+     * @return true en caso de que la eliminación se haya realizado de forma
      * correcta, false en caso contrario.
      * 
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
@@ -77,4 +77,26 @@ public interface Persistencia extends Remote {
     public boolean delete(String tabla, Map<String, ?> attrWhere)
             throws RemoteException;
     
+    /**
+     * Obtiene todos los registros de una tabla dada que cumplan con las cláusulas
+     * where de igualdad contenidas en el mapa suministrado
+     * 
+     * @param tabla el nombre de la tabla donde se desean consultar los registros
+     * @param columnas los nombres de las columnas de la tabla que se desean
+     * obtener
+     * @param attrWhere un mapa que contiene las cláusulas where para consultar un
+     * registro de la tabla, donde la llave es el nombre de la columna y el
+     * valor el valor que esa columna debe tomar para que se obtenga ese
+     * registro de la tabla. En caso de que este parámetro sea null se regresarán
+     * todos los registros de la tabla
+     * 
+     * @return un objeto DataTable con los registros que resultaron de la consulta,
+     * un DataTable vacío en caso de que la consulta no haya retornado nada o
+     * null en caso de que haya ocurrido una excepción al realizar la consulta
+     * 
+     * @throws RemoteException en caso de que ocurra un error remoto al invocar
+     * este método
+     */
+    public DataTable get(String tabla, String[] columnas, Map<String, ?> attrWhere)
+            throws RemoteException;
 }
