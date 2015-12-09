@@ -64,23 +64,17 @@ public class AccesoLocal extends UnicastRemoteObject implements Sitio7Int {
     }
 
     @Override
-    public short delete(String tabla, Map<String, ?> attrWhere) throws RemoteException {
-        short ok = 1;
-        BaseDAO dao = new BaseDAO();
+    public boolean delete(String tabla, Map<String, ?> attrWhere) throws RemoteException {
         
-        if (!dao.delete(tabla, attrWhere)) {
-            ok = 0;
-        }
+        boolean ok = new BaseDAO().delete(tabla, attrWhere);
         
         System.out.println("Se eliminó de la tabla: " + tabla + " resultado: " + ok);
         
         return ok;
     }
-    
+
     @Override
-    public DataTable get(String tabla, String[] columnas, String[] aliases,
-            Map<String, ?> attrWhere) throws RemoteException {
-        
+    public DataTable get(String tabla, String[] columnas, String[] aliases, Map<String, ?> attrWhere) throws RemoteException {
         return new BaseDAO().get(tabla, columnas, aliases, attrWhere);
     }
 

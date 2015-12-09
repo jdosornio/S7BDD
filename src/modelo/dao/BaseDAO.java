@@ -389,17 +389,11 @@ public class BaseDAO {
         //attrWhere.put("tipo_evento_id", 3);
         
         
-        DataTable dt = new BaseDAO().get("evento", new String[]{"nombre"},
-                new String[]{"nombre_evento"}, attrWhere);
+        DataTable dt = new BaseDAO().get("plantel",
+                new String[]{"MAX(id)"}, new String[]{"id"}, null);
         
         if(dt != null) {
-            while(dt.next()) {
-                for (int i = 0; i < dt.getColumnCount(); i++) {
-                    System.out.print(dt.getColumnName(i) + "---> " +
-                            dt.getObject(dt.getColumnName(i)) + " || ");
-                }
-                System.out.println("");
-            }
+            System.out.println(dt);
         }
     }
 }

@@ -10,6 +10,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.dao.BaseDAO;
@@ -106,7 +107,7 @@ public class QueryManager {
 //                    System.out.println("Thread de inserción a la interface: " + 
 //                            interfaceSitio + ", resultadoTodos = " + transactionOk);
 
-                    short resultadoActual = uniInsert(false, interfaceSitio, tabla, datos)
+                    short resultadoActual = uniInsert(true, interfaceSitio, tabla, datos)
                             != null ? (short) 1 : (short) 0;
 
 //                    System.out.println("Thread de inserción a la interface: " + 
@@ -149,6 +150,130 @@ public class QueryManager {
                 + ok);
 
         return ok;
+    }
+
+    public static DataTable uniGet(Interfaces interfaceSitio, String tableName,
+            String[] projectColumns, String[] projectAliases, Map<String, ?> attrWhere) {
+        DataTable ok = null;
+        try {
+            if (interfaceSitio == Interfaces.LOCALHOST) {
+                ok = new BaseDAO().get(tableName, projectColumns, projectAliases, attrWhere);
+                System.out.println("Insert en el sitio: "
+                        + interfaceSitio + ", resultado = " + ok);
+            } else {
+                Sitio sitio = InterfaceManager.getInterface(
+                        InterfaceManager.getInterfaceServicio(interfaceSitio));
+
+                //insertar los datos
+                if (sitio != null) {
+
+                    ok = sitio.get(tableName, projectColumns, projectAliases, attrWhere);
+
+                    System.out.println("Insert en el sitio: "
+                            + interfaceSitio + ", resultado = " + ok);
+                }
+            }
+
+        } catch (RemoteException | NotBoundException ex) {
+            Logger.getLogger(QueryManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = null;
+        }
+        return ok;
+    }
+    
+    public static synchronized short broadDelete(String tabla, Map<String, ?> attrWhere)
+            throws InterruptedException {
+        List<Thread> hilosInsert = new ArrayList<>();
+
+        //TRANSACTION_OK.set((short)1);
+        transactionOk = (localDelete(tabla, attrWhere) != null ? (short) 1 : (short) 0);
+
+//        System.out.println("Thread principal solicitante: transacionOk = 1");
+//        uniInsert(savePKs, Interfaces.LOCALHOST, tablas, datos);
+//        System.out.println("savePKs: " + savePKs + " Id: " + datos.getValueAt(0, 0));
+        //Obtener todas las interfaces de sitio
+        for (Interfaces interfaceSitio : InterfaceManager.getInterfacesRegistradas()) {
+
+            if (interfaceSitio.equals(Interfaces.LOCALHOST)) {
+                continue;
+            }
+
+            Runnable borrar = new Runnable() {
+                @Override
+                public void run() {
+//                    short resultadoTodos = TRANSACTION_OK.get();
+//                    System.out.println("Thread de inserción a la interface: " + 
+//                            interfaceSitio + ", resultadoTodos = " + resultadoTodos);
+//                    System.out.println("Thread de inserción a la interface: " + 
+//                            interfaceSitio + ", resultadoTodos = " + transactionOk);
+
+                    short resultadoActual = uniDelete(interfaceSitio, tabla, attrWhere)
+                            != null ? (short) 1 : (short) 0;
+
+//                    System.out.println("Thread de inserción a la interface: " + 
+//                            interfaceSitio + ", resultadoActual = " + resultadoActual);
+                    //short resultadoNuevo = (short)(resultadoTodos * resultadoActual);
+                    //TRANSACTION_OK.set(resultadoNuevo);
+                    transactionOk *= (short) resultadoActual;
+
+//                    System.out.println("Thread de inserción a la interface: " + 
+//                            interfaceSitio + ", resultadoNuevo = " + transactionOk);
+                }
+            };
+
+            Thread hilo = new Thread(borrar);
+            hilo.start();
+            hilosInsert.add(hilo);
+        }
+
+        for (Thread hilo : hilosInsert) {
+            hilo.join();
+        }
+
+//        System.out.println("Thread principal solicitante: transactionOk = " + 
+//                TRANSACTION_OK.get());
+        System.out.println("Thread principal solicitante: transactionOk = "
+                + transactionOk);
+
+        return transactionOk;
+    }
+
+    public static Boolean localDelete(String tabla, Map<String, ?> attrWhere) {
+        Boolean ok;
+        //Eliminar tabla....
+        ok = new BaseDAO().delete(tabla, attrWhere);
+
+        System.out.println("Eliminación de " + tabla + " , resultado: "
+                + ok);
+
+        return (ok == true) ? ok : null;
+    }
+
+    public static Boolean uniDelete(Interfaces interfaceSitio, String tabla,
+            Map<String, ?> attrWhere) {
+        Boolean ok = null;
+        try {
+            //obtener la interface
+            Sitio sitio = InterfaceManager.getInterface(
+                    InterfaceManager.getInterfaceServicio(interfaceSitio));
+
+            //insertar los datos
+            if (sitio != null) {
+                ok = sitio.delete(tabla, attrWhere);
+
+                System.out.println("Delete en el sitio: "
+                        + interfaceSitio + ", resultado = " + ok);
+            }
+
+        } catch (ConnectException ex) {
+            Logger.getLogger(QueryManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = null;
+        } catch (RemoteException | NotBoundException ex) {
+            Logger.getLogger(QueryManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = null;
+        }
+
+        return (ok == true) ? ok : null;
     }
 
 }

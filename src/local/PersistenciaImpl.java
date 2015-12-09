@@ -29,21 +29,24 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
 
         if (tabla.equalsIgnoreCase("empleado")) {
             datos.rewind();
-            ok = TransactionManager.insertEmpleado(true, tabla, datos);
+            ok = TransactionManager.insertEmpleado(datos);
+            System.out.println("Inserción de empleado: " + tabla + ", resultado: "
+                    + ok);
 
         } else if (tabla.equalsIgnoreCase(("plantel"))) {
             datos.rewind();
             ok = TransactionManager.insertPlantel(false, tabla, datos);
+            System.out.println("Inserción de plantel: " + tabla + ", resultado: "
+                    + ok);
 
         } else if (tabla.equalsIgnoreCase("implementacion_evento_empleado")) {
             ok = false;
         } else {
             System.out.println("insert replicado");
             ok = TransactionManager.insertReplicado(true, tabla, datos);
+            System.out.println("Inserción replicado: " + tabla + ", resultado: "
+                    + ok);
         }
-
-        System.out.println("Inserción de empleado: " + tabla + ", resultado: "
-                + ok);
 
         return ok;
     }
@@ -55,23 +58,34 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
 
     @Override
     public boolean delete(String tabla, Map<String, ?> attrWhere) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean ok = false;
+        
+        if (tabla.equalsIgnoreCase("empleado")) {
+            //ok = TransactionManager.insertEmpleado(true, tabla, datos);
+        } else if (tabla.equalsIgnoreCase(("plantel"))) {
+            //ok = TransactionManager.insertPlantel(false, tabla, datos);
+        } else if (tabla.equalsIgnoreCase("implementacion_evento_empleado")) {
+            //ok = false;
+        } else {
+            ok = TransactionManager.deleteReplicado(tabla, attrWhere);
+        }
+        
+        return ok;
     }
 
     @Override
-    public DataTable get(String tabla, String[] columnas, String[] aliases, 
+    public DataTable get(String tabla, String[] columnas, String[] aliases,
             Map<String, ?> attrWhere) throws RemoteException {
 
         DataTable dt = null;
-        
+
         if (!tabla.equalsIgnoreCase("empleado")
                 && !tabla.equalsIgnoreCase("plantel")
                 && !tabla.equalsIgnoreCase("implementacion_evento_empleado")) {
             //Todas son consultas locales....
             dt = new BaseDAO().get(tabla, columnas, aliases, attrWhere);
         }
-        
+
         return dt;
     }
-
 }

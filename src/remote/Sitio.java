@@ -77,7 +77,7 @@ public interface Sitio extends Remote {
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public short delete(String tabla, Map<String, ?> attrWhere) throws RemoteException;
+    public boolean delete(String tabla, Map<String, ?> attrWhere) throws RemoteException;
     
     /**
      * Obtener el resultado de la consulta en la tabla elegida.

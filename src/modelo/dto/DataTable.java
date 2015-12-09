@@ -470,15 +470,15 @@ public class DataTable extends AbstractTableModel {
 
     @Override
     public String toString() {
-        String string = null;
+        String string = "";
         
         rewind();
         while (next()) {
             for (int i = 0; i < getColumnCount(); i++) {
-                System.out.print(getColumnName(i) + "---> "
-                        + getObject(getColumnName(i)) + " || ");
+                string += getColumnName(i) + "---> "
+                        + getObject(getColumnName(i)) + " || ";
             }
-            System.out.println("");
+            string += "\n";
         }
         
         rewind();
