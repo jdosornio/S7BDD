@@ -23,8 +23,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import remote.Sitio;
 
@@ -96,5 +97,21 @@ public class InterfaceManager {
      */
     public static String getInterfaceServicio(Interfaces interfaceSitio) {
         return SERVICIOS_SITIO.get(interfaceSitio);
+    }
+    
+    public static List<Interfaces> getInterfacesRegistradas() {
+        List<Interfaces> interfacesRegistradas = new ArrayList<>();
+                
+        for(String nombreInterface : SITIOS.keySet()) {
+            for (Interfaces interfaz : SERVICIOS_SITIO.keySet()) {
+                if(SERVICIOS_SITIO.get(interfaz).equals(nombreInterface)) {
+                    interfacesRegistradas.add(interfaz);
+                }
+            }
+        }
+        
+        System.out.println("Interfaces registradas: " + interfacesRegistradas);
+        
+        return interfacesRegistradas;
     }
 }

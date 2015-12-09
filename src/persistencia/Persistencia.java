@@ -33,7 +33,7 @@ public interface Persistencia extends Remote {
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public boolean insert(String[] tablas, DataTable ... datos)
+    public boolean insert(String tabla, DataTable  datos)
             throws RemoteException;
     
     /**

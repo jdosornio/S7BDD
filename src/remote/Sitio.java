@@ -35,7 +35,7 @@ public interface Sitio extends Remote {
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public short insert(boolean savePKs, String[] tablas, DataTable ... datos)
+    public DataTable insert(boolean savePKs, String tabla, DataTable  datos)
             throws RemoteException;
     
     /**

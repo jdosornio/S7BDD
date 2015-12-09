@@ -7,8 +7,6 @@ package local;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import modelo.dao.BaseDAO;
 import modelo.dto.DataTable;
@@ -26,33 +24,25 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
     }
 
     @Override
-    public boolean insert(String[] tablas, DataTable... datos) throws RemoteException {
+    public boolean insert(String tabla, DataTable datos) throws RemoteException {
         boolean ok;
 
-        //Tablas y datatables
-        List<String> tablasReplicadas = new ArrayList<>();
-        List<DataTable> dtReplicados = new ArrayList<>();
+        if (tabla.equalsIgnoreCase("empleado")) {
+            datos.rewind();
+            ok = TransactionManager.insertEmpleado(true, tabla, datos);
 
-        //Insertar todas las tablas....
-        for (int i = 0, j = 0; i < tablas.length; i++) {
-            if (!tablas[i].equalsIgnoreCase("empleado")
-                    && !tablas[i].equalsIgnoreCase("plantel")
-                    && !tablas[i].equalsIgnoreCase("implementacion_evento_empleado")) {
+        } else if (tabla.equalsIgnoreCase(("plantel"))) {
+            datos.rewind();
+            ok = TransactionManager.insertPlantel(false, tabla, datos);
 
-                tablasReplicadas.add(tablas[i]);
-                dtReplicados.add(datos[i]);
-            }
+        } else if (tabla.equalsIgnoreCase("implementacion_evento_empleado")) {
+            ok = false;
+        } else {
+            System.out.println("insert replicado");
+            ok = TransactionManager.insertReplicado(true, tabla, datos);
         }
 
-        String[] tablasReplicadasArr = new String[tablasReplicadas.size()];
-        DataTable[] dtReplicadosArr = new DataTable[dtReplicados.size()];
-
-        ok = TransactionManager.insertReplicado(true,
-                tablasReplicadas.toArray(tablasReplicadasArr),
-                dtReplicados.toArray(dtReplicadosArr));
-
-        //Mandar las tablas a insertar a todos los nodos
-        System.out.println("Inserción de " + tablas.length + " tablas, resultado: "
+        System.out.println("Inserción de empleado: " + tabla + ", resultado: "
                 + ok);
 
         return ok;

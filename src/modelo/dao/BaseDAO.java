@@ -24,15 +24,14 @@ import modelo.dto.DataTable;
  */
 public class BaseDAO {
 
-    public boolean add(String tableName, DataTable data, boolean savePKs) {
+    public DataTable add(String tableName, DataTable data, boolean savePKs) {
         PreparedStatement ps = null;
         Connection conexion;
-        boolean ok = true;
         String insertQuery = "INSERT INTO " + tableName + "( ";
         String valuesSection = "VALUES ( ";
 
         if (data == null || data.getRowCount() == 0) {
-            return false;
+            return null;
         }
 
         try {
@@ -43,7 +42,7 @@ public class BaseDAO {
                     //ignorar la llave primaria que es la columna 1.
                     continue;
                 }
-                
+
                 insertQuery += data.getColumnName(i) + ", ";
                 valuesSection += "?, ";
             }
@@ -58,18 +57,18 @@ public class BaseDAO {
             conexion = ConnectionManager.conectar();
 
             //Si se desea guardar las llaves generadas o no
-            if(savePKs) {
+            if (savePKs) {
                 //Devolver la columna de llave primaria (primera)
                 ps = conexion.prepareStatement(insertQuery,
-                        new String[] {data.getColumnName(0)});
+                        new String[]{data.getColumnName(0)});
             } else {
                 ps = conexion.prepareStatement(insertQuery);
             }
-            
+
             //Cargar datos...
             //Reiniciar por si las dudas...
             data.rewind();
-            
+
             while (data.next()) {
                 for (int i = 0; i < data.getColumnCount(); i++) {
                     //Posicion del preparedStatement
@@ -78,39 +77,40 @@ public class BaseDAO {
                     if (savePKs) {
                         if (i == 0) {
                             continue;
-                        }
-                        else {
+                        } else {
                             psPos--;
                         }
                     }
-                    
+
                     ps.setObject(psPos, data.getObject(data.getColumnName(i)));
                 }
                 //Ejecutar insert uno a uno para obtener la llave primaria
                 ps.executeUpdate();
-                
+
                 if (savePKs) {
                     //Obtener llave primaria generada
                     try (ResultSet rsPK = ps.getGeneratedKeys()) {
-                        
-                        if(rsPK.next()) {
+
+                        if (rsPK.next()) {
                             //Guardar llave primaria generada en el DataTable
-                            data.setObject(data.getColumnName(0), rsPK.getObject(1));       
+                            data.setObject(data.getColumnName(0), rsPK.getObject(1));
                         }
                     }
                 }
             }
-            
+
             //Si se guardaron llaves primarias regresar al inicio
             if (savePKs) {
                 data.rewind();
             }
 
+            System.out.println("Id 1: " + data.getValueAt(0, 0));
+            
             //ConnectionManager.commit();
         } catch (SQLException ex) {
             ConnectionManager.rollback();
             ConnectionManager.cerrar();
-            ok = false;
+            data = null;
             Logger.getLogger(BaseDAO.class.getName()).log(Level.SEVERE, null, ex);
 
         } finally {
@@ -118,9 +118,7 @@ public class BaseDAO {
             //ConnectionManager.cerrarTodo(ps, null);
         }
 
-        System.out.println("Id 1: " + data.getValueAt(0, 0));
-        
-        return ok;
+        return data;
     }
 
     public boolean update(String tableName, DataTable data, Map<String, ?> attrWhere) {

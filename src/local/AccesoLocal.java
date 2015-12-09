@@ -36,23 +36,16 @@ public class AccesoLocal extends UnicastRemoteObject implements Sitio7Int {
     }
 
     @Override
-    public short insert(boolean savePKs, String[] tablas, DataTable... datos)
+    public DataTable insert(boolean savePKs, String tabla, DataTable datos)
             throws RemoteException {
-        short ok = 1;
+        DataTable ok;
         BaseDAO dao = new BaseDAO();
-        //Insertar todas las tablas....
-        for (int i = 0; i < tablas.length; i++) {
-            boolean noError = dao.add(tablas[i], datos[i], savePKs);
-            
-            if (!noError) {
-                ok = 0;
-                break;
-            }
-        }
-        
-        System.out.println("Inserción de " + tablas.length + " tablas, resultado: " +
-                ok);
-        
+
+        ok = dao.add(tabla, datos, savePKs);
+
+        System.out.println("Inserción de " + tabla + " , resultado: "
+                + ok);
+
         return ok;
     }
 
