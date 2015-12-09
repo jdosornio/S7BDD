@@ -50,15 +50,12 @@ public class AccesoLocal extends UnicastRemoteObject implements Sitio7Int {
     }
 
     @Override
-    public short update(String tabla, DataTable datos, Map<String, ?> attrWhere) throws RemoteException {
-        short ok = 1;
-        BaseDAO dao = new BaseDAO();
+    public boolean update(String tabla, DataTable datos, Map<String, ?> attrWhere)
+            throws RemoteException {
         
-        if (!dao.update(tabla, datos, attrWhere)) {
-            ok = 0;
-        }
+        boolean ok = new BaseDAO().update(tabla, datos, attrWhere);
         
-        System.out.println("Actualizada la tabla: " + tabla + " resultado: " + ok);
+        System.out.println("Se actualizó la tabla: " + tabla + " resultado: " + ok);
         
         return ok;
     }

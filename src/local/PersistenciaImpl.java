@@ -53,7 +53,31 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
 
     @Override
     public boolean update(String tabla, DataTable datos, Map<String, ?> attrWhere) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean ok = false;
+
+        if (tabla.equalsIgnoreCase("empleado")) {
+            datos.rewind();
+            //ok = TransactionManager.insertEmpleado(datos);
+            System.out.println("Modificación de empleado, resultado: "
+                    + ok);
+
+        } else if (tabla.equalsIgnoreCase(("plantel"))) {
+            datos.rewind();
+            //ok = TransactionManager.insertPlantel(false, tabla, datos);
+            System.out.println("Inserción de plantel, resultado: "
+                    + ok);
+
+        } else if (tabla.equalsIgnoreCase("implementacion_evento_empleado")) {
+            ok = false;
+        } else {
+            System.out.println("update replicado");
+            ok = TransactionManager.updateReplicado(tabla, datos, attrWhere);
+            
+            System.out.println("Modificación replicada: " + tabla + ", resultado: "
+                    + ok);
+        }
+
+        return ok;
     }
 
     @Override

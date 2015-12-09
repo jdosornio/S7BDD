@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modelo.dao.BaseDAO;
 import modelo.dto.DataTable;
 import modelo.util.ConnectionManager;
 import remote.Sitio;
@@ -58,29 +57,6 @@ public class TransactionManager {
         return ok;
     }
 
-    public static boolean deleteReplicado(String tabla, Map<String, ?> attrWhere) {
-        boolean ok = true;
-
-        System.out.println("---------Start Global transaction----------");
-        try {
-            short result = QueryManager.broadDelete(tabla, attrWhere);
-
-            if (result == 0) {
-                ok = false;
-                rollback();
-            } else {
-                commit();
-            }
-
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TransactionManager.class.getName()).log(Level.SEVERE, null, ex);
-            ok = false;
-        }
-
-        System.out.println("---------End Global transaction----------");
-        return ok;
-    }
-    
     public static boolean insertEmpleado(DataTable datos) {
         boolean ok = true;
 
@@ -252,6 +228,54 @@ public class TransactionManager {
         }
 
         System.out.println("---------End Plantel transaction----------");
+        return ok;
+    }
+    
+    public static boolean updateReplicado(String tabla, DataTable datos,
+            Map<String, ?> attrWhere) {
+        
+        boolean ok = true;
+
+        System.out.println("---------Start Global transaction----------");
+        try {
+            short result = QueryManager.broadUpdate(tabla, datos, attrWhere);
+
+            if (result == 0) {
+                ok = false;
+                rollback();
+            } else {
+                commit();
+            }
+
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TransactionManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = false;
+        }
+
+        System.out.println("---------End Global transaction----------");
+        return ok;
+    }
+    
+    public static boolean deleteReplicado(String tabla, Map<String, ?> attrWhere) {
+        boolean ok = true;
+
+        System.out.println("---------Start Global transaction----------");
+        try {
+            short result = QueryManager.broadDelete(tabla, attrWhere);
+
+            if (result == 0) {
+                ok = false;
+                rollback();
+            } else {
+                commit();
+            }
+
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TransactionManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = false;
+        }
+
+        System.out.println("---------End Global transaction----------");
         return ok;
     }
 

@@ -51,14 +51,15 @@ public interface Sitio extends Remote {
      * que esa columna debe tomar para que se actualicen los valores del DataTable
      * en ese registro
      * 
-     * @return 1 en caso de que la actualización se haya realizado de forma
-     * correcta o un 0 en caso de que haya ocurrido un error y se haya hecho
+     * @return true en caso de que la actualización se haya realizado de forma
+     * correcta o un false en caso de que haya ocurrido un error y se haya hecho
      * rollback en este nodo.
      * 
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public short update(String tabla, DataTable datos, Map<String, ?> attrWhere) throws RemoteException;
+    public boolean update(String tabla, DataTable datos, Map<String, ?> attrWhere)
+            throws RemoteException;
     
     /**
      * Elimina todos los registros de una tabla dada que cumplan con las cláusulas
