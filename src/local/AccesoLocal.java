@@ -13,6 +13,7 @@ import modelo.util.ConnectionManager;
 import modelo.dao.EmpleadoDAO;
 import modelo.dto.DataTable;
 import remote.Sitio7Int;
+import remote.util.InterfaceManager;
 
 /**
  *
@@ -101,5 +102,16 @@ public class AccesoLocal extends UnicastRemoteObject implements Sitio7Int {
     @Override
     public short updateEmpleadosByImplementacion(int idImplementacion, int[] idsEmpleado) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setConexionesSitos(Map<InterfaceManager.Interfaces, Object[]> conexiones)
+            throws RemoteException {
+        
+        InterfaceManager.setIntefacesConexion(conexiones);
+        InterfaceManager.conexionRemota = true;
+        
+        System.out.println("Se obtuvieron " + InterfaceManager
+                .getInterfacesConexion().size() + " interfaces");
     }
 }

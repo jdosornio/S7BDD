@@ -468,14 +468,14 @@ public class DataTable extends AbstractTableModel {
 
         return dts;
     }
-    
+
     public DataTable removerColumnas(String[] columnasRemover) {
         //Columnas actuales
         List<String> columnasActuales = new ArrayList<>(Arrays.asList(columns));
-        
+
         for (int i = 0; i < columnasActuales.size(); i++) {
             String columnaActual = columnasActuales.get(i);
-            
+
             for (String columnaRemover : columnasRemover) {
                 if (columnaActual.equalsIgnoreCase(columnaRemover)) {
                     columnasActuales.remove(i);
@@ -484,21 +484,20 @@ public class DataTable extends AbstractTableModel {
                 }
             }
         }
-        
+
         String[] columnasNuevas = new String[columnasActuales.size()];
-        
+
         columnasNuevas = columnasActuales.toArray(columnasNuevas);
-        
+
         DataTable[] frags = fragmentarVertical(columnasRemover, columnasNuevas);
-        
-        
+
         return frags[1];
     }
-    
+
     @Override
     public String toString() {
         String string = "";
-        
+
         rewind();
         while (next()) {
             for (int i = 0; i < getColumnCount(); i++) {
@@ -507,9 +506,106 @@ public class DataTable extends AbstractTableModel {
             }
             string += "\n";
         }
-        
+
         rewind();
-        
+
         return string;
+    }
+
+    /**
+     * Combina un par de tablas que se encuentren divididas horizontalmente en
+     * una sola.
+     *
+     * @param tablas
+     * @return Un objeto DataTable con la información de las dos tablas juntas.
+     */
+    public static DataTable combinarFragH(DataTable... tablas) {
+
+        int filas = 0;
+        for (DataTable tabla : tablas) {
+            filas += tabla.getRowCount();
+        }
+
+        String nombreColumas[] = tablas[0].getColumns();
+        for (int i = 1; i < tablas.length; i++) {
+            if (tablas[i] != null && Arrays.equals(nombreColumas, tablas[i].getColumns())) {
+                nombreColumas = tablas[i].getColumns();
+            } else {
+                return null;
+            }
+        }
+
+        int columnas = tablas[0].getColumnCount();
+
+        Object datos[][] = new Object[filas][columnas];
+
+        int row = 0;
+        for (DataTable tabla : tablas) {
+
+            for (int i = 0; i < tabla.getRowCount(); i++, row++) {
+                for (int j = 0; j < columnas; j++) {
+                    datos[row][j] = tabla.getValueAt(i, j);
+                }
+            }
+        }
+        //agregamos los datos de la tabla1
+
+        return new DataTable(tablas[0].getColumns(), datos);
+    }
+
+    /**
+     * Combina un par de tablas que se encuentren divididas verticalmente en una
+     * sola.
+     *
+     * @param tabla1 El primer fragmento.
+     * @param tabla2 El segundo fragmento.
+     * @param nombreColumnaID Nombre de la columna de id para verificar que los
+     * fragmentos de las dos tablas coincidan.
+     * @return Un objeto DataTable con la información de las dos tablas juntas.
+     */
+    public static DataTable combinarFragV(DataTable tabla1, DataTable tabla2, String nombreColumnaID) {
+
+        if (tabla1 == null || tabla2 == null) {
+            return null;
+        }
+        
+        int filas = tabla1.getRowCount();
+        int columnas = tabla1.getColumnCount() + tabla2.getColumnCount() - 1;
+
+        if (filas % 2 != 0) {
+            return null;
+        }
+        boolean ok;
+        for (int i = 0; i < tabla1.getRowCount(); i++) {
+            ok = tabla1.getObject(nombreColumnaID).equals(tabla2.getObject(nombreColumnaID));
+            if (!ok) {
+                return null;
+            }
+        }
+        String columns[] = new String[columnas];
+
+        //se agregan los atributos de la tabla1 al nuevo vector
+        System.arraycopy(tabla1.getColumns(), 0, columns, 0, tabla1.getColumnCount());
+
+        //se agregan los atributos de la tabla2 sin incluir el primero
+        System.arraycopy(tabla2.getColumns(), 1, columns, tabla1.getColumnCount(), tabla2.getColumnCount() - 1);
+
+        Object datos[][] = new Object[filas][columnas];
+
+        //recorrer la cantidad de tuplas
+        for (int i = 0; i < filas; i++) {
+            //agregar las tuplas de la tabla1
+            for (int j = 0; j < tabla1.getColumns().length; j++) {
+                datos[i][j] = tabla1.getValueAt(i, j);
+            }
+
+            //agregar las tuplas de la tabla2
+            for (int j = tabla1.getColumns().length, k = 1; j < columnas; j++, k++) {
+                datos[i][j] = tabla2.getValueAt(i, k);
+            }
+        }
+
+        return new DataTable(columns, datos);
+
     }
 }

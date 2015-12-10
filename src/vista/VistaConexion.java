@@ -7,12 +7,14 @@ package vista;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextField;
 import local.AccesoLocal;
 import local.InicioServidor;
 import local.PersistenciaImpl;
+import remote.Sitio;
 import remote.util.InterfaceManager;
 import remote.util.InterfaceManager.Interfaces;
 
@@ -127,6 +129,7 @@ public class VistaConexion extends javax.swing.JFrame {
         jLabel35 = new javax.swing.JLabel();
         persistPuerto = new javax.swing.JTextField();
         jLabel36 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         jLabel11.setFont(new java.awt.Font("Source Sans Pro", 1, 15)); // NOI18N
         jLabel11.setText("Puerto:");
@@ -288,6 +291,13 @@ public class VistaConexion extends javax.swing.JFrame {
         jLabel36.setFont(new java.awt.Font("Source Sans Pro", 1, 18)); // NOI18N
         jLabel36.setText("Persistencia");
 
+        jButton1.setText("Mandar Datos");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enviarConexionesSitio(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -410,12 +420,10 @@ public class VistaConexion extends javax.swing.JFrame {
                                             .addComponent(jLabel33)
                                             .addGap(33, 33, 33))
                                         .addComponent(jLabel30)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(s7Int)
-                                        .addComponent(s7Puerto)
-                                        .addComponent(s7IP, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(btnConectarse)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(s7Int)
+                                    .addComponent(s7Puerto)
+                                    .addComponent(s7IP, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel35)
@@ -427,8 +435,13 @@ public class VistaConexion extends javax.swing.JFrame {
                             .addComponent(btnIniciarServidor, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel36)))
-                .addContainerGap(28, Short.MAX_VALUE))
+                        .addComponent(jLabel36))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(btnConectarse)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
@@ -536,7 +549,7 @@ public class VistaConexion extends javax.swing.JFrame {
                             .addComponent(jLabel28)
                             .addComponent(s5Int, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addGap(18, 18, 18)
@@ -569,12 +582,13 @@ public class VistaConexion extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel29)
                             .addComponent(s6Int, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnIniciarServidor, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnConectarse, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addGap(55, 55, 55)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnConectarse, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -586,50 +600,166 @@ public class VistaConexion extends javax.swing.JFrame {
             String serverIp = s7IP.getText();
             int serverPuerto = Integer.parseInt(s7Puerto.getText());
             String serverInt = s7Int.getText();
-            
+
+            //Guardar datos de Sitio 7
+            InterfaceManager.setConexionSitio(Interfaces.SITIO_7, s7IP, s7Puerto,
+                    s7Int);
+
             //Persistencia
             int puerto = Integer.parseInt(persistPuerto.getText());
             String intfP = persistInt.getText();
-            
+
             //Declarar la ip de esta computadora (linux)
             System.setProperty("java.rmi.server.hostname", serverIp);
-            
+
             //Iniciar servicios
             InicioServidor.iniciarServidor(serverPuerto, serverInt, AccesoLocal.class);
             InicioServidor.iniciarServidor(puerto, intfP, PersistenciaImpl.class);
-            
+
             //Guardar la interface de este mismo nodo
             InterfaceManager.addInterface("127.0.0.1", serverPuerto, serverInt);
             InterfaceManager.setInterfaceServicio(Interfaces.LOCALHOST, serverInt);
+
+        } catch (RemoteException | NotBoundException ex) {
+            Logger.getLogger(VistaConexion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_iniciarServidor
+
+    private void conectarse(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conectarse
+
+        //Validar si se tienen ya las conexiones guardadas
+        if (!InterfaceManager.getInterfacesConexion().isEmpty() &&
+                InterfaceManager.conexionRemota) {
+            //Guardar los datos en los campos....
+            Map<Interfaces, Object[]> datosConexion = InterfaceManager
+                    .getInterfacesConexion();
+            
+            int noSitio = 0;
+            
+            //Guardar en los campos de texto
+            for (Interfaces sitio : datosConexion.keySet()) {
+                Object[] datos = datosConexion.get(sitio);
+                
+                switch(sitio) {
+                    case SITIO_1:
+                        s1IP.setText(datos[0].toString());
+                        s1Puerto.setText(datos[1].toString());
+                        s1Int.setText(datos[2].toString());
+                        noSitio = 1;
+                        break;
+                        
+                    case SITIO_2:
+                        s2IP.setText(datos[0].toString());
+                        s2Puerto.setText(datos[1].toString());
+                        s2Int.setText(datos[2].toString());
+                        noSitio = 2;
+                        break;
+                        
+                    case SITIO_3:
+                        s3IP.setText(datos[0].toString());
+                        s3Puerto.setText(datos[1].toString());
+                        s3Int.setText(datos[2].toString());
+                        noSitio = 3;
+                        break;
+                        
+                    case SITIO_4:
+                        s4IP.setText(datos[0].toString());
+                        s4Puerto.setText(datos[1].toString());
+                        s4Int.setText(datos[2].toString());
+                        noSitio = 4;
+                        break;
+                        
+                    case SITIO_5:
+                        s5IP.setText(datos[0].toString());
+                        s5Puerto.setText(datos[1].toString());
+                        s5Int.setText(datos[2].toString());
+                        noSitio = 5;
+                        break;
+                        
+                    case SITIO_6:
+                        s6IP.setText(datos[0].toString());
+                        s6Puerto.setText(datos[1].toString());
+                        s6Int.setText(datos[2].toString());
+                        noSitio = 6;
+                        break;
+                        
+                    case SITIO_7:
+                        s7IP.setText(datos[0].toString());
+                        s7Puerto.setText(datos[1].toString());
+                        s7Int.setText(datos[2].toString());
+                        noSitio = 7;
+                        break;
+                }
+                
+                conectarSitio(datos[0].toString(), datos[1].toString(),
+                        datos[2].toString(), noSitio);
+            }
+            
+        } else {
+            for (int i = 0; i < 6; i++) {
+                String ip = txtIPs[i].getText();
+                String puerto = txtPuertos[i].getText();
+                String intf = txtInts[i].getText();
+
+                if (!ip.isEmpty() && !puerto.isEmpty() && !intf.isEmpty()) {
+
+                    Interfaces intfSitio = conectarSitio(ip, puerto, intf, i + 1);
+                    
+                    InterfaceManager.setConexionSitio(intfSitio, ip, puerto, intf);
+                }
+            }
+        }
+    }//GEN-LAST:event_conectarse
+
+    private Interfaces conectarSitio(String ip, String puerto, String intf, int noSitio) {
+        Interfaces intfSitio = null;
+        try {
+            InterfaceManager.addInterface(ip, Integer.parseInt(puerto), intf);
+            
+            //guardar el nombre de la interface
+            String interfaceSitio = "SITIO_" + (noSitio);
+
+            intfSitio = Interfaces.valueOf(interfaceSitio);
+            
+            InterfaceManager.setInterfaceServicio(intfSitio, intf);
             
         } catch (RemoteException | NotBoundException ex) {
             Logger.getLogger(VistaConexion.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-    }//GEN-LAST:event_iniciarServidor
+        return intfSitio;
+    }
 
-    private void conectarse(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conectarse
+    private void enviarConexionesSitio(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarConexionesSitio
         // TODO add your handling code here:
-        for (int i = 0; i < 6; i++) {
-            String ip = txtIPs[i].getText();
-            String puerto = txtPuertos[i].getText();
-            String intf = txtInts[i].getText();
-            
-            if (!ip.isEmpty() && !puerto.isEmpty() && !intf.isEmpty()) {
-                try {
-                    InterfaceManager.addInterface(ip, Integer.parseInt(puerto), intf);
-                    //guardar el nombre de la interface
-                    String interfaceSitio = "SITIO_" + (i + 1);
-                    
-                    InterfaceManager.setInterfaceServicio(
-                            Interfaces.valueOf(interfaceSitio), intf);
-                    
-                } catch (RemoteException | NotBoundException ex) {
-                    Logger.getLogger(VistaConexion.class.getName()).log(Level.SEVERE, null, ex);
+
+        //Enviar a todas las interfaces
+        for (Interfaces interfaceEnviar : InterfaceManager.getInterfacesRegistradas()) {
+            try {
+                //Saltarse el localhost
+                if (interfaceEnviar.equals(Interfaces.LOCALHOST)) {
+                    continue;
                 }
+
+                Map datosConexion = InterfaceManager.getInterfacesConexion();
+                //Si es el destino remover esos datos
+                if (datosConexion.containsKey(interfaceEnviar)) {
+                    datosConexion.remove(interfaceEnviar);
+                }
+
+                //Enviar los datos de las conexiones
+                Sitio sitio = InterfaceManager
+                        .getInterface(InterfaceManager.getInterfaceServicio(interfaceEnviar));
+
+                //Enviar los datos de la conexion
+                sitio.setConexionesSitos(datosConexion);
+
+            } catch (RemoteException | NotBoundException ex) {
+                Logger.getLogger(VistaConexion.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_conectarse
+    }//GEN-LAST:event_enviarConexionesSitio
 
     /**
      * @param args the command line arguments
@@ -669,6 +799,7 @@ public class VistaConexion extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConectarse;
     private javax.swing.JButton btnIniciarServidor;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
