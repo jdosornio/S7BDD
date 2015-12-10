@@ -602,8 +602,8 @@ public class VistaConexion extends javax.swing.JFrame {
             String serverInt = s7Int.getText();
 
             //Guardar datos de Sitio 7
-            InterfaceManager.setConexionSitio(Interfaces.SITIO_7, s7IP, s7Puerto,
-                    s7Int);
+            InterfaceManager.setConexionSitio(Interfaces.SITIO_7, serverIp,
+                    serverPuerto, serverInt);
 
             //Persistencia
             int puerto = Integer.parseInt(persistPuerto.getText());
@@ -752,8 +752,10 @@ public class VistaConexion extends javax.swing.JFrame {
                 Sitio sitio = InterfaceManager
                         .getInterface(InterfaceManager.getInterfaceServicio(interfaceEnviar));
 
-                //Enviar los datos de la conexion
-                sitio.setConexionesSitos(datosConexion);
+                if (sitio != null) {
+                    //Enviar los datos de la conexion
+                    sitio.setConexionesSitos(datosConexion);
+                }
 
             } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(VistaConexion.class.getName()).log(Level.SEVERE, null, ex);
