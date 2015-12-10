@@ -333,7 +333,7 @@ public class QueryManager {
         try {
             if (interfaceSitio == Interfaces.LOCALHOST) {
                 ok = new BaseDAO().get(tableName, projectColumns, projectAliases, attrWhere);
-                System.out.println("Insert en el sitio: "
+                System.out.println("Get en el sitio: "
                         + interfaceSitio + ", resultado = " + ok);
             } else {
                 Sitio sitio = InterfaceManager.getInterface(
@@ -344,7 +344,7 @@ public class QueryManager {
 
                     ok = sitio.get(tableName, projectColumns, projectAliases, attrWhere);
 
-                    System.out.println("Insert en el sitio: "
+                    System.out.println("Get en el sitio: "
                             + interfaceSitio + ", resultado = " + ok);
                 }
             }

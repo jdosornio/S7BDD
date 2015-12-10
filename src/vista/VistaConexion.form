@@ -494,6 +494,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s1IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.1.77"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[0] = s1IP;"/>
       </AuxValues>
@@ -547,6 +550,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s2IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.1.77"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[1] = s2IP;"/>
       </AuxValues>
@@ -561,7 +567,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="s2Puerto">
       <Properties>
-        <Property name="text" type="java.lang.String" value="11973"/>
+        <Property name="text" type="java.lang.String" value="11974"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtPuertos[1] = s2Puerto;"/>
@@ -584,6 +590,9 @@
       </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="s3IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.1.77"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[2] = s3IP;"/>
       </AuxValues>
@@ -598,7 +607,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="s3Puerto">
       <Properties>
-        <Property name="text" type="java.lang.String" value="11973"/>
+        <Property name="text" type="java.lang.String" value="11975"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtPuertos[2] = s3Puerto;"/>
@@ -637,6 +646,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s4IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.1.77"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[3] = s4IP;"/>
       </AuxValues>
@@ -651,7 +663,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="s4Puerto">
       <Properties>
-        <Property name="text" type="java.lang.String" value="11973"/>
+        <Property name="text" type="java.lang.String" value="11976"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtPuertos[3] = s4Puerto;"/>
@@ -690,6 +702,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s5IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.1.77"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[4] = s5IP;"/>
       </AuxValues>
@@ -704,7 +719,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="s5Puerto">
       <Properties>
-        <Property name="text" type="java.lang.String" value="11973"/>
+        <Property name="text" type="java.lang.String" value="11977"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtPuertos[4] = s5Puerto;"/>
@@ -743,6 +758,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s6IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.1.77"/>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtIPs[5] = s6IP;"/>
       </AuxValues>
@@ -757,7 +775,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="s6Puerto">
       <Properties>
-        <Property name="text" type="java.lang.String" value="11973"/>
+        <Property name="text" type="java.lang.String" value="11978"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="txtPuertos[5] = s6Puerto;"/>
@@ -796,6 +814,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="s7IP">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="192.168.1.77"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel30">
       <Properties>
@@ -807,7 +828,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="s7Puerto">
       <Properties>
-        <Property name="text" type="java.lang.String" value="11973"/>
+        <Property name="text" type="java.lang.String" value="11979"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel31">
@@ -878,7 +899,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="persistPuerto">
       <Properties>
-        <Property name="text" type="java.lang.String" value="11977"/>
+        <Property name="text" type="java.lang.String" value="12006"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel36">

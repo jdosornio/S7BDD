@@ -8,6 +8,7 @@ package transaction;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -279,6 +280,109 @@ public class TransactionManager {
         return ok;
     }
 
+    public static DataTable consultarEmpleados() {
+        String[] columnas = {
+            "numero",
+            "primer_nombre",
+            "segundo_nombre",
+            "apellido_paterno",
+            "apellido_materno",};
+
+        DataTable fragDatosSitio1 = QueryManager.uniGet(Interfaces.LOCALHOST, "empleado", columnas, null, null);
+        DataTable fragDatosSitio4 = QueryManager.uniGet(Interfaces.SITIO_4, "empleado", columnas, null, null);
+        DataTable fragDatosSitio7 = QueryManager.uniGet(Interfaces.SITIO_7, "empleado", columnas, null, null);
+        
+        return DataTable.combinarFragH(fragDatosSitio1, fragDatosSitio4, fragDatosSitio7);
+    }
+    
+    public static DataTable getEmpleado(String[] columnas, Map<String, ?> condicion){
+        System.out.println("---------Start GetEmpleado transaction---------- ");
+
+        
+        String[] fragLlaves = {"numero", "correo", "adscripcion_id",
+            "departamento_id", "plantel_id", "direccion_id"};
+        List<String> listaLlaves = Arrays.asList(fragLlaves);
+        List<String> listaColumnas = null;
+        if(columnas != null){
+            listaColumnas = Arrays.asList(columnas);
+        }
+        
+        //Se busca en el nodo local al Empleado[NOMBRES]
+        DataTable empleado = QueryManager.uniGet(Interfaces.LOCALHOST,
+                EMPLEADO, columnas, null, condicion);
+        if(columnas == null || listaLlaves.retainAll(listaColumnas)){
+            DataTable llaves = QueryManager.uniGet(Interfaces.SITIO_2, EMPLEADO,
+                columnas, null, condicion);
+           empleado = DataTable.combinarFragV(empleado, llaves, "numero");
+        }
+        
+        if (empleado == null && empleado.getRowCount() == 0) {
+            //En caso de no encontrarse se busca en el nodo 4
+            empleado = QueryManager.uniGet(Interfaces.SITIO_4, EMPLEADO, null,
+                    null, condicion);
+            if(columnas == null || listaLlaves.retainAll(listaColumnas)){
+                DataTable llaves = QueryManager.uniGet(Interfaces.SITIO_3, EMPLEADO,
+                    columnas, null, condicion);
+               empleado = DataTable.combinarFragV(empleado, llaves, "numero");
+            }
+            
+            if (empleado == null && empleado.getRowCount() == 0) {
+                //Por ultimo se busca en el sitio 7 en caso de no encontrarse
+                empleado = QueryManager.uniGet(Interfaces.SITIO_7, EMPLEADO, null,
+                        null, condicion);
+                if(columnas == null || listaLlaves.retainAll(listaColumnas)){
+                    DataTable llaves = QueryManager.uniGet(Interfaces.SITIO_6, EMPLEADO,
+                        columnas, null, condicion);
+                   empleado = DataTable.combinarFragV(empleado, llaves, "numero");
+                }
+            }
+        }
+
+        System.out.println("---------End GetEmpleado transaction----------");
+        return empleado;
+    }
+    
+    public static DataTable consultarPlanteles(Map attrWhere) {
+        
+        //Zona 1
+        DataTable fragDatosZona1 = QueryManager.uniGet(
+                Interfaces.SITIO_1, PLANTEL, null, null, attrWhere);
+        //Zona 2
+        DataTable fragDatosZona2 = QueryManager.uniGet(
+                Interfaces.SITIO_3, PLANTEL, null, null, attrWhere);
+        //Zona 3
+        DataTable fragDatosZona3 = QueryManager.uniGet(
+                Interfaces.LOCALHOST,PLANTEL, null, null, attrWhere);
+        
+        return DataTable.combinarFragH(fragDatosZona1, fragDatosZona2,
+                fragDatosZona3);
+    }
+    
+    public static DataTable getPlantel(Map<String, ?> condicion){
+        System.out.println("---------Start GetPlantel transaction---------- ");
+
+        //Se busca en el nodo local (Zona 3)
+        DataTable plantel = QueryManager.uniGet(Interfaces.LOCALHOST,
+                PLANTEL, null, null, condicion);
+        
+        if (plantel == null || plantel.isEmpty()) {
+            //Si no se encontró en la Zona 3 buscar en la Zona 2
+            plantel = QueryManager.uniGet(Interfaces.SITIO_3, PLANTEL, null, null,
+                    condicion);
+            
+            if (plantel == null || plantel.isEmpty()) {
+                //Si no esta en la Zona 2 buscar en la Zona 1
+                plantel = QueryManager.uniGet(Interfaces.SITIO_1, PLANTEL,
+                        null, null, condicion);
+                
+                //Si no se encontró aquí regresar el plantel vacío de todos modos
+            }
+        }
+
+        System.out.println("---------End GetEmpleado transaction----------");
+        return plantel;
+    }
+    
     public static void commit() throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
 
