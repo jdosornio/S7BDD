@@ -99,7 +99,7 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
 
     @Override
     public DataTable get(String tabla, String[] columnas, String[] aliases,
-            Map<String, ?> attrWhere) throws RemoteException {
+            Map<String, Object> attrWhere, String orderColumn) throws RemoteException {
 
         DataTable dt = null;
 
@@ -107,24 +107,33 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
                 && !tabla.equalsIgnoreCase("plantel")
                 && !tabla.equalsIgnoreCase("implementacion_evento_empleado")) {
             //Todas son consultas locales....
-            dt = new BaseDAO().get(tabla, columnas, aliases, attrWhere);
+            dt = new BaseDAO().get(tabla, columnas, aliases, attrWhere, orderColumn);
         }  else if(tabla.equalsIgnoreCase("empleado")) {
             
-            if(attrWhere == null || (!attrWhere.containsKey("direccion_id")
+            if(attrWhere == null) {
+                //Consulta general
+                dt = TransactionManager.consultarEmpleados();
+            } else if((attrWhere.containsKey("adscripcion_id")
+                    && (int)attrWhere.get("adscripcion_id") == 2)
+                    || (!attrWhere.containsKey("direccion_id")
                     && !attrWhere.containsKey("departamento_id")
-                    && !attrWhere.containsKey("numero"))) {
-                //Consulta general o filtrada
+                    && !attrWhere.containsKey("numero")
+                    && !attrWhere.containsKey("adscripcion_id"))) {
+                System.out.println("consulta filtrada en todos los sitios!");
+                //Consulta filtrada de todos los sitios
                 dt = TransactionManager.consultarEmpleados(attrWhere);
                 
             } else if(attrWhere.containsKey("direccion_id") ||
-                    attrWhere.containsKey("departamento_id")) {
-                //Consultas filtradas en el sitio 2
+                    attrWhere.containsKey("departamento_id") ||
+                    (attrWhere.containsKey("adscripcion_id")
+                    && (int)attrWhere.get("adscripcion_id") != 2)) {
+                //Consultas filtradas en el sitio 1 y 2
                 //dt = TransactionManager.getEmpleadosByD(columnas, attrWhere);
             } else if(attrWhere.containsKey("numero")) { 
                 //Consulta especifica
                 dt = TransactionManager.getEmpleado(columnas, attrWhere);
             }
-        }else if(tabla.equalsIgnoreCase("plantel")){
+        } else if(tabla.equalsIgnoreCase("plantel")) {
             if(attrWhere == null || !attrWhere.containsKey("id")) {
                 //Consulta filtrada o general
                 dt = TransactionManager.consultarPlanteles(attrWhere);

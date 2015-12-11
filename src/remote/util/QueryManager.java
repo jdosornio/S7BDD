@@ -287,11 +287,13 @@ public class QueryManager {
     }
     
     public static DataTable uniGet(Interfaces interfaceSitio, String tableName,
-            String[] projectColumns, String[] projectAliases, Map<String, ?> attrWhere) {
+            String[] projectColumns, String[] projectAliases, Map<String, ?> attrWhere,
+            String orderColumn) {
         DataTable ok = null;
         try {
             if (interfaceSitio == Interfaces.LOCALHOST) {
-                ok = new BaseDAO().get(tableName, projectColumns, projectAliases, attrWhere);
+                ok = new BaseDAO().get(tableName, projectColumns, projectAliases,
+                        attrWhere, orderColumn);
                 System.out.println("Get en el sitio: "
                         + interfaceSitio + ", resultado = " + ok);
             } else {
@@ -301,7 +303,8 @@ public class QueryManager {
                 //insertar los datos
                 if (sitio != null) {
 
-                    ok = sitio.get(tableName, projectColumns, projectAliases, attrWhere);
+                    ok = sitio.get(tableName, projectColumns, projectAliases,
+                            attrWhere, orderColumn);
 
                     System.out.println("Get en el sitio: "
                             + interfaceSitio + ", resultado = " + ok);
@@ -322,10 +325,11 @@ public class QueryManager {
         try {
             if (interfaceSitio == Interfaces.LOCALHOST) {
                 tablaID = new BaseDAO().get(tabla, new String[]{"MAX(" + columnaID + ")"},
-                        new String[]{"id"}, null);
+                        new String[]{"id"}, null, columnaID);
             } else {
                 tablaID = InterfaceManager.getInterface(InterfaceManager.getInterfaceServicio(interfaceSitio))
-                        .get(tabla, new String[]{"MAX(" + columnaID + ")"}, new String[]{"id"}, null);
+                        .get(tabla, new String[]{"MAX(" + columnaID + ")"},
+                                new String[]{"id"}, null, columnaID);
             }
             tablaID.next();
             ok = tablaID.getInt("id");
