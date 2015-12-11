@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -380,20 +379,5 @@ public class BaseDAO {
             //ConnectionManager.cerrarTodo(ps, null);
         }
         return dt;
-    }
-    
-    public static void main(String[] args) {
-        Map<String, Object> attrWhere = new HashMap<>();
-        
-        attrWhere.put("id >", 4);
-        //attrWhere.put("tipo_evento_id", 3);
-        
-        
-        DataTable dt = new BaseDAO().get("plantel",
-                new String[]{"MAX(id)"}, new String[]{"id"}, null);
-        
-        if(dt != null) {
-            System.out.println(dt);
-        }
     }
 }

@@ -83,7 +83,7 @@ public class QueryManager {
      * registrados en este nodo.
      *
      * @param savePKs guardar las llaves primarias generadas
-     * @param tablas el arreglo de nombres de tablas donde se insertará
+     * @param tabla el arreglo de nombres de tablas donde se insertará
      * @param datos el arreglo de DataTables que se desean insertar en el orden
      * en el que están los nombres de las tablas en el arreglo
      *
@@ -96,11 +96,7 @@ public class QueryManager {
             throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
 
-        //TRANSACTION_OK.set((short)1);
         transactionOk = (localInsert(savePKs, tabla, datos) != null ? (short) 1 : (short) 0);
-
-//        System.out.println("Thread principal solicitante: transacionOk = 1");
-//        uniInsert(savePKs, Interfaces.LOCALHOST, tablas, datos);
         System.out.println("savePKs: " + savePKs + " Id: " + datos.getValueAt(0, 0));
 
         //Obtener todas las interfaces de sitio
@@ -113,23 +109,9 @@ public class QueryManager {
             Runnable insertar = new Runnable() {
                 @Override
                 public void run() {
-//                    short resultadoTodos = TRANSACTION_OK.get();
-//                    System.out.println("Thread de inserción a la interface: " + 
-//                            interfaceSitio + ", resultadoTodos = " + resultadoTodos);
-//                    System.out.println("Thread de inserción a la interface: " + 
-//                            interfaceSitio + ", resultadoTodos = " + transactionOk);
-
                     short resultadoActual = uniInsert(true, interfaceSitio, tabla, datos)
                             != null ? (short) 1 : (short) 0;
-
-//                    System.out.println("Thread de inserción a la interface: " + 
-//                            interfaceSitio + ", resultadoActual = " + resultadoActual);
-                    //short resultadoNuevo = (short)(resultadoTodos * resultadoActual);
-                    //TRANSACTION_OK.set(resultadoNuevo);
                     transactionOk *= (short) resultadoActual;
-
-//                    System.out.println("Thread de inserción a la interface: " + 
-//                            interfaceSitio + ", resultadoNuevo = " + transactionOk);
                 }
             };
 
@@ -142,8 +124,6 @@ public class QueryManager {
             hilo.join();
         }
 
-//        System.out.println("Thread principal solicitante: transactionOk = " + 
-//                TRANSACTION_OK.get());
         System.out.println("Thread principal solicitante: transactionOk = "
                 + transactionOk);
 
@@ -195,7 +175,6 @@ public class QueryManager {
             throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
 
-        //TRANSACTION_OK.set((short)1);
         transactionOk = (localUpdate(tabla, datos, attrWhere) != null ? (short) 1 : (short) 0);
 
         //Obtener todas las interfaces de sitio
@@ -274,13 +253,8 @@ public class QueryManager {
             throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
 
-        //TRANSACTION_OK.set((short)1);
         transactionOk = (localDelete(tabla, attrWhere) != null ? (short) 1 : (short) 0);
 
-//        System.out.println("Thread principal solicitante: transacionOk = 1");
-//        uniInsert(savePKs, Interfaces.LOCALHOST, tablas, datos);
-//        System.out.println("savePKs: " + savePKs + " Id: " + datos.getValueAt(0, 0));
-        //Obtener todas las interfaces de sitio
         for (Interfaces interfaceSitio : InterfaceManager.getInterfacesRegistradas()) {
 
             if (interfaceSitio.equals(Interfaces.LOCALHOST)) {
@@ -290,23 +264,10 @@ public class QueryManager {
             Runnable borrar = new Runnable() {
                 @Override
                 public void run() {
-//                    short resultadoTodos = TRANSACTION_OK.get();
-//                    System.out.println("Thread de inserción a la interface: " + 
-//                            interfaceSitio + ", resultadoTodos = " + resultadoTodos);
-//                    System.out.println("Thread de inserción a la interface: " + 
-//                            interfaceSitio + ", resultadoTodos = " + transactionOk);
-
                     short resultadoActual = uniDelete(interfaceSitio, tabla, attrWhere)
                             != null ? (short) 1 : (short) 0;
 
-//                    System.out.println("Thread de inserción a la interface: " + 
-//                            interfaceSitio + ", resultadoActual = " + resultadoActual);
-                    //short resultadoNuevo = (short)(resultadoTodos * resultadoActual);
-                    //TRANSACTION_OK.set(resultadoNuevo);
                     transactionOk *= (short) resultadoActual;
-
-//                    System.out.println("Thread de inserción a la interface: " + 
-//                            interfaceSitio + ", resultadoNuevo = " + transactionOk);
                 }
             };
 
@@ -319,8 +280,6 @@ public class QueryManager {
             hilo.join();
         }
 
-//        System.out.println("Thread principal solicitante: transactionOk = " + 
-//                TRANSACTION_OK.get());
         System.out.println("Thread principal solicitante: transactionOk = "
                 + transactionOk);
 
@@ -356,4 +315,25 @@ public class QueryManager {
         return ok;
     }
 
+    public static Integer getMaxId(Interfaces interfaceSitio, String tabla,
+            String columnaID) {
+        DataTable tablaID;
+        Integer ok;
+        try {
+            if (interfaceSitio == Interfaces.LOCALHOST) {
+                tablaID = new BaseDAO().get(tabla, new String[]{"MAX(" + columnaID + ")"},
+                        new String[]{"id"}, null);
+            } else {
+                tablaID = InterfaceManager.getInterface(InterfaceManager.getInterfaceServicio(interfaceSitio))
+                        .get(tabla, new String[]{"MAX(" + columnaID + ")"}, new String[]{"id"}, null);
+            }
+            tablaID.next();
+            ok = tablaID.getInt("id");
+        } catch (RemoteException | NotBoundException | NullPointerException ex) {
+            Logger.getLogger(QueryManager.class.getName()).log(Level.SEVERE, null, ex);
+            ok = -1;
+        }
+        return ok;
+
+    }
 }
