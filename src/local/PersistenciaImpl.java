@@ -128,7 +128,8 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
                     (attrWhere.containsKey("adscripcion_id")
                     && (int)attrWhere.get("adscripcion_id") != 2)) {
                 //Consultas filtradas en el sitio 1 y 2
-                //dt = TransactionManager.getEmpleadosByD(columnas, attrWhere);
+                dt = TransactionManager.consultarEmpleadosByD(attrWhere);
+                
             } else if(attrWhere.containsKey("numero")) { 
                 //Consulta especifica
                 dt = TransactionManager.getEmpleado(columnas, attrWhere);
