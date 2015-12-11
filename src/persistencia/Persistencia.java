@@ -20,6 +20,7 @@ public interface Persistencia extends Remote {
      * Inserta secuencialmente todos los datos de un DataTable en su tabla
      * correspondiente segun el nombre de la tabla
      * 
+     * @param tabla
      * @param tablas los nombres de las tablas a las que se desean insertar
      * datos, éstas tablas deben estar en el orden de inserción necesario para
      * que todas las tablas se puedan insertar sin que haya problemas de
@@ -74,7 +75,7 @@ public interface Persistencia extends Remote {
      * @throws RemoteException en caso de que ocurra un error remoto al invocar
      * este método
      */
-    public boolean delete(String tabla, Map<String, ?> attrWhere)
+    public boolean delete(String tabla, Map<String, Object> attrWhere)
             throws RemoteException;
     
     /**

@@ -57,7 +57,7 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
 
         if (tabla.equalsIgnoreCase("empleado")) {
             datos.rewind();
-            //ok = TransactionManager.insertEmpleado(datos);
+            ok = TransactionManager.updateEmpleado(datos, attrWhere);
             System.out.println("Modificación de empleado, resultado: "
                     + ok);
 
@@ -81,15 +81,16 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
     }
 
     @Override
-    public boolean delete(String tabla, Map<String, ?> attrWhere) throws RemoteException {
+    public boolean delete(String tabla, Map<String, Object> attrWhere)
+            throws RemoteException {
         boolean ok = false;
         
         if (tabla.equalsIgnoreCase("empleado")) {
-            //ok = TransactionManager.insertEmpleado(true, tabla, datos);
+            ok = TransactionManager.deleteEmpleado(attrWhere);
         } else if (tabla.equalsIgnoreCase(("plantel"))) {
-            //ok = TransactionManager.insertPlantel(false, tabla, datos);
+            ok = TransactionManager.deletePlantel(attrWhere);
         } else if (tabla.equalsIgnoreCase("implementacion_evento_empleado")) {
-            //ok = false;
+            ok = false;
         } else {
             ok = TransactionManager.deleteReplicado(tabla, attrWhere);
         }
@@ -149,6 +150,6 @@ public class PersistenciaImpl extends UnicastRemoteObject implements Persistenci
 
     @Override
     public DataTable getImplementacionesByEmpleado(String numeroEmpleado) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return TransactionManager.consultarImplementacionesByEmpleado(numeroEmpleado);
     }
 }

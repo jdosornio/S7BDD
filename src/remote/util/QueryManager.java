@@ -249,6 +249,24 @@ public class QueryManager {
         return (ok == true) ? ok : null;
     }
     
+    public static Boolean multiDelete(String tabla, Map<String, ?> attrWhere,
+            Interfaces... interfaces) {
+        short result = 1;
+        
+        for (Interfaces interfaceSitio : interfaces) {
+            if (interfaceSitio.equals(Interfaces.LOCALHOST)) {
+                result *= localDelete(tabla, attrWhere)
+                        != null ? 1 : 0;
+            } else {
+                result *= uniDelete(interfaceSitio, tabla,
+                        attrWhere) != null ? 1 : 0;
+            }
+        }
+        
+        //No hacer commit ni rollback, eso lo decide transaction manager
+        return result == 1;
+    }
+    
     public static synchronized short broadDelete(String tabla, Map<String, ?> attrWhere)
             throws InterruptedException {
         List<Thread> hilosInsert = new ArrayList<>();
